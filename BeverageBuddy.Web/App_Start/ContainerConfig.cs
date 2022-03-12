@@ -20,9 +20,16 @@ namespace BeverageBuddy.Web
 
             builder.RegisterControllers(typeof(MvcApplication).Assembly);
             builder.RegisterApiControllers(typeof(MvcApplication).Assembly);
-            builder.RegisterType<InMemoryRecipeData>()
+            
+            //builder.RegisterType<InMemoryRecipeData>()
+            //    .As<IRecipeData>()
+            //    .SingleInstance();
+            //builder.RegisterType<BeverageBuddyDbContext>().InstancePerRequest();
+            
+            builder.RegisterType<SqlRecipeData>()
                 .As<IRecipeData>()
-                .SingleInstance();
+                .InstancePerRequest();
+            builder.RegisterType<BeverageBuddyDbContext>().InstancePerRequest();
 
             var container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));

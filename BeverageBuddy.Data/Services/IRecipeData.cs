@@ -9,5 +9,9 @@ namespace BeverageBuddy.Data.Services
     public interface IRecipeData
     {
         IEnumerable<Recipe> GetAll();
+        Recipe Get(int id);
+        void Add(Recipe recipe);
+        void Update(Recipe recipe);
+        void Delete(int id);
     }
 }
