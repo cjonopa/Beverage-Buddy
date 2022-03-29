@@ -17,6 +17,6 @@ namespace BeverageBuddy.Data.Models
         [Display(Name="Type of Drink")]
         public DrinkType DrinkType { get; set; }
 
-        public IEnumerable<string> Ingredients { get; set; }
+        public IEnumerable<Ingredient> Ingredients { get; set; }
     }
 }

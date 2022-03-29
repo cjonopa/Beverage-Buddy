@@ -17,8 +17,8 @@ namespace BeverageBuddy.Data.Services
                     Name = "Orange Juice",
                     Alcoholic = false,
                     DrinkType = DrinkType.Juice,
-                    Ingredients = new List<string>() {
-                        "orange concentrate"
+                    Ingredients = new List<Ingredient>() {
+                        new Ingredient() {Id = 1, Name = "Orange Concentrate", Amount = 1}
                     }
                 },
                 new Recipe {
@@ -26,8 +26,9 @@ namespace BeverageBuddy.Data.Services
                     Name = "ScrewDriver",
                     Alcoholic = true,
                     DrinkType = DrinkType.Mixed,
-                    Ingredients = new List<string>() {
-                        "orange concentrate", "vodka"
+                    Ingredients = new List<Ingredient>() {
+                        new Ingredient() {Id = 1, Name = "Orange Concentrate", Amount = 1},
+                        new Ingredient() {Id = 2, Name = "Vodka", Amount = 1}
                     }
                 },
                 new Recipe {
@@ -35,8 +36,9 @@ namespace BeverageBuddy.Data.Services
                     Name = "Fuzzy Navel",
                     Alcoholic = true,
                     DrinkType = DrinkType.Mixed,
-                    Ingredients = new List<string>() {
-                        "orange concentrate", "peach schnapps"
+                    Ingredients = new List<Ingredient>() {
+                        new Ingredient() {Id = 1, Name = "Orange Concentrate", Amount = 1},
+                        new Ingredient() {Id = 3, Name = "Peach Schnapps", Amount = 1}
                     }
                 }
             };
