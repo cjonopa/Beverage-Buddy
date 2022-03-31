@@ -1,0 +1,27 @@
+[
+	{
+		"RecipeId": 1,
+		"IngredientId": 1,
+		"Amount": "16 oz."
+	},
+	{
+		"RecipeId": 2,
+		"IngredientId": 1,
+		"Amount": "15 oz."
+	},
+	{
+		"RecipeId": 2,
+		"IngredientId": 2,
+		"Amount": "1 oz."
+	},
+	{
+		"RecipeId": 3,
+		"IngredientId": 1,
+		"Amount": "15 oz."
+	},
+	{
+		"RecipeId": 3,
+		"IngredientId": 3,
+		"Amount": "1 oz."
+	}
+]

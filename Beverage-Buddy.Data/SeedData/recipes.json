@@ -1,0 +1,17 @@
+[
+	{
+		"Name": "Orange Juice",
+		"Alcoholic": false,
+		"DrinkType": 4
+	},
+	{
+		"Name": "Screw Driver",
+		"Alcoholic": true,
+		"DrinkType": 9
+	},
+	{
+		"Name": "Fuzzy Navel",
+		"Alcoholic": true,
+		"DrinkType": 9
+	}
+]
