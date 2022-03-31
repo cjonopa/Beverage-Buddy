@@ -1,5 +1,11 @@
 {
 	"ConnectionStrings": {
 		"BeverageBuddyContextDb": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BeverageBuddy;Integrated Security=SSPI;Connect Timeout=30;"
+	},
+	"Logging": {
+		"LogLevel": {
+			"Default": "Information",
+			"Microsoft":  "Warning"
+		}
 	}
 }
