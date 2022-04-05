@@ -21,5 +21,7 @@ namespace Beverage_Buddy.Data.Entities
         public DrinkType DrinkType { get; set; }
 
         public IEnumerable<RecipeIngredient> Ingredients { get; set; }
+
+        public RecipeUser User { get; set; }
     }
 }

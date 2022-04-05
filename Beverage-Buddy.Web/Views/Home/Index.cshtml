@@ -1,18 +1,7 @@
-﻿@model IEnumerable<Recipe>
-@{
+﻿@{
     ViewBag.Title = "Home Page";
 }
 
 <div class="jumbotron">
     <h1>Beverage Buddy</h1>
-    <div>
-        There are @Model.Count() recipes in the database.
-    </div>
 </div>
-
-<ul>
-    @foreach (var recipe in Model)
-    {
-        <li>@recipe.Name</li>
-    }
-</ul>

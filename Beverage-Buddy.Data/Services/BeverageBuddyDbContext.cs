@@ -1,11 +1,13 @@
 ﻿using Beverage_Buddy.Data.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 
 namespace Beverage_Buddy.Data.Services
 {
-    public class BeverageBuddyDbContext : DbContext
+    public class BeverageBuddyDbContext : IdentityDbContext<RecipeUser, IdentityRole, string>
     {
         private readonly IConfiguration config;
 

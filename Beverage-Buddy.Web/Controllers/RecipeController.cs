@@ -1,5 +1,8 @@
 ﻿using Beverage_Buddy.Data.Entities;
 using Beverage_Buddy.Data.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -8,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace Beverage_Buddy.Web.Controllers
 {
+    [Authorize]
     public class RecipeController : Controller
     {
         private readonly IRecipeRepository db;

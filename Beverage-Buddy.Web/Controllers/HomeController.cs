@@ -23,9 +23,7 @@ namespace Beverage_Buddy.Web.Controllers
 
         public ActionResult Index()
         {
-            var model = db.GetAll();
-
-            return View(model);
+            return View();
         }
 
         public ActionResult About()

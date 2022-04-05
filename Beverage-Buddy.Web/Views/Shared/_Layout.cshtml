@@ -22,10 +22,22 @@
                     <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="About">About</a></li>
                     <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Contact">Contact</a></li>
                 </ul>
+                <ul class="navbar-nav m-md-auto">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Logout">Logout</a></li>
+                    }
+                    else
+                    {
+                        <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Login">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Register">Register</a></li>
+                    }
+                </ul>
             </div>
         </nav>
     </header>
     <section class="container body-content">
+        <h2 class="text-center">@ViewBag.Title</h2>
         @RenderBody()
         <hr />
         <footer>

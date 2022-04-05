@@ -31,7 +31,7 @@ namespace Beverage_Buddy.Data
             using (var scope = scopeFactory.CreateScope())
             {
                 var seeder = scope.ServiceProvider.GetService<BeverageBuddySeeder>();
-                seeder.SeedSamples();
+                seeder.SeedSamplesAsync().Wait();
             }
         }
 
