@@ -1,7 +1,10 @@
-﻿namespace Beverage_Buddy.Web.Services
+﻿using Beverage_Buddy.Web.Models;
+using System.Threading.Tasks;
+
+namespace Beverage_Buddy.Web.Services
 {
     public interface IMailService
     {
-        void SendMessage(string to, string subject, string body);
+        Task SendEmailAsync(MailRequest mailRequest);
     }
 }

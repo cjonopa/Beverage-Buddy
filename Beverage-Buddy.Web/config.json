@@ -5,7 +5,14 @@
 	"Logging": {
 		"LogLevel": {
 			"Default": "Information",
-			"Microsoft":  "Warning"
+			"Microsoft": "Warning"
 		}
+	},
+	"MailSettings": {
+		"Mail": "email@somewhere.com",
+		"DisplayName": "Beverage Buddy",
+		"Password": "EmailPassword",
+		"Host": "SMTP Host",
+		"Port": 587
 	}
 }

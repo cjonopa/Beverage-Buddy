@@ -1,4 +1,5 @@
 ﻿using Beverage_Buddy.Data.Services;
+using Beverage_Buddy.Web.Models;
 using Beverage_Buddy.Web.Services;
 using Beverage_Buddy.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -23,9 +24,7 @@ namespace Beverage_Buddy.Web.Controllers
 
         public ActionResult Index()
         {
-            var model = db.GetAll();
-
-            return View(model);
+            return View();
         }
 
         public ActionResult About()
@@ -48,7 +47,14 @@ namespace Beverage_Buddy.Web.Controllers
             if (ModelState.IsValid)
             {
                 // send email
-                mailService.SendMessage("abc@abc.com", model.Subject, $"From: {model.Name} - {model.Email}, Message: {model.Message}");
+                mailService.SendEmailAsync(
+                    new MailRequest()
+                    {
+                        To = "abc@abc.com",
+                        Subject = model.Subject,
+                        Body = $"From: {model.Name} - {model.Email}, Message: {model.Message}"
+                    });
+
                 ViewBag.SentMessage = "Mail Sent";
             }
 

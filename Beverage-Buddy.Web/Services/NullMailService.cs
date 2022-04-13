@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Beverage_Buddy.Web.Models;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,12 @@ namespace Beverage_Buddy.Web.Services
         public NullMailService(ILogger<NullMailService> logger)
         {
             this.logger = logger;
+        }
+
+        public Task SendEmailAsync(MailRequest mailRequest)
+        {
+            logger.LogInformation($"To: {mailRequest.To} Subject: {mailRequest.Subject} Body: {mailRequest.Body}");
+            return null;
         }
 
         public void SendMessage(string to, string subject, string body)

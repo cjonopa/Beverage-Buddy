@@ -4,14 +4,16 @@ using Beverage_Buddy.Data.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Beverage_Buddy.Data.Migrations
 {
     [DbContext(typeof(BeverageBuddyDbContext))]
-    partial class BeverageBuddyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220404183915_Identity")]
+    partial class Identity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

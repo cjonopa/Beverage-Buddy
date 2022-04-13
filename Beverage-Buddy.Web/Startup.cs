@@ -1,30 +1,52 @@
+using Beverage_Buddy.Data.Entities;
 using Beverage_Buddy.Data.Services;
 using Beverage_Buddy.Web.Services;
+using Beverage_Buddy.Web.Settings;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Beverage_Buddy.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
 
-        public IConfiguration Configuration { get; }
+        private readonly IConfiguration configuration;
+        private readonly IWebHostEnvironment env;
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
+        {
+            this.configuration = configuration;
+            this.env = env;
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IMailService, NullMailService>();
+
+            services.AddIdentity<RecipeUser, IdentityRole>(cfg =>
+            {
+                cfg.User.RequireUniqueEmail = true;
+                cfg.Password.RequiredLength = 8;
+            })
+                .AddEntityFrameworkStores<BeverageBuddyDbContext>();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie();
+
+            if (env.IsDevelopment())
+            {
+                services.AddTransient<IMailService, NullMailService>();
+            } 
+            else if (env.IsProduction())
+            {
+                services.AddTransient<IMailService, MimeMailService>();
+                services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
+            }
 
             services.AddDbContext<BeverageBuddyDbContext>();
             
@@ -37,7 +59,7 @@ namespace Beverage_Buddy.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
             if (env.IsDevelopment())
             {
@@ -50,6 +72,9 @@ namespace Beverage_Buddy.Web
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(cfg =>
             {
