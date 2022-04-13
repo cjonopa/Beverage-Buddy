@@ -1,4 +1,6 @@
 ﻿using Beverage_Buddy.Data.Entities;
+using Beverage_Buddy.Web.Models;
+using Beverage_Buddy.Web.Services;
 using Beverage_Buddy.Web.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,14 +17,17 @@ namespace Beverage_Buddy.Web.Controllers
         private readonly ILogger<AccountController> logger;
         private readonly UserManager<RecipeUser> userManager;
         private readonly SignInManager<RecipeUser> signInManager;
+        private readonly IMailService mail;
 
         public AccountController(ILogger<AccountController> logger,
             UserManager<RecipeUser> userManager,
-            SignInManager<RecipeUser> signInManager)
+            SignInManager<RecipeUser> signInManager,
+            IMailService mail)
         {
             this.logger = logger;
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.mail = mail;
         }
 
         [HttpGet]
@@ -50,6 +55,14 @@ namespace Beverage_Buddy.Web.Controllers
                         model.Email,
                         model.Password,
                         false, false);
+
+                    await mail.SendEmailAsync(
+                        new MailRequest()
+                        {
+                            To = model.Email,
+                            Subject = "Registration",
+                            Body = "You have successfully registerd with FridgeMeal."
+                        });
 
                     return RedirectToAction("Index", "Home");
                 }
