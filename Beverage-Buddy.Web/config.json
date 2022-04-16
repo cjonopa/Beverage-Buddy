@@ -14,5 +14,12 @@
 		"Password": "EmailPassword",
 		"Host": "SMTP Host",
 		"Port": 587
+	},
+	"APISettings": {
+		"AppId": "10998836",
+		"AccessPoint": "https://api.edamam.com/api/recipes/v2",
+		"Type": "public",
+		"AppKey": "56a5d937317155e12b69f7802c836fc8",
+		"DishType": "Drinks"
 	}
 }

@@ -1,7 +1,9 @@
 using Beverage_Buddy.Data.Entities;
 using Beverage_Buddy.Data.Services;
-using Beverage_Buddy.Web.Services;
+using Beverage_Buddy.Web.APIs;
+using Beverage_Buddy.Web.APIs.Edamam;
 using Beverage_Buddy.Web.Settings;
+using Beverage_Buddy.Web.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -47,6 +49,9 @@ namespace Beverage_Buddy.Web
                 services.AddTransient<IMailService, MimeMailService>();
                 services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
             }
+
+            services.AddScoped<IAPICall, EdamamAPICall>();
+            services.Configure<APISettings>(configuration.GetSection("APISettings"));
 
             services.AddDbContext<BeverageBuddyDbContext>();
             
