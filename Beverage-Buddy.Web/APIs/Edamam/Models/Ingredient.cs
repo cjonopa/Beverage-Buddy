@@ -9,10 +9,11 @@ namespace Beverage_Buddy.Web.APIs.Edamam.Models
     public class Ingredient
     {
         public string Text { get; set; }
-        public int Quantity { get; set; }
-        public string Measure { get; set; }
+        public float Quantity { get; set; }
         public string Food { get; set; }
-        public double Weight { get; set; }
-        public string Image { get; set; }
+        public string Measure { get; set; }
+        public float Weight { get; set; }
+        public string FoodId { get; set; }
+        public string FoodCategory { get; set; }
     }
 }

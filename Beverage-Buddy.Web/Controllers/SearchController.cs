@@ -1,25 +1,32 @@
-﻿using Beverage_Buddy.Web.APIs;
+﻿using Beverage_Buddy.Web.APIs.Edamam;
+using Beverage_Buddy.Web.APIs.Edamam.Models;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Beverage_Buddy.Web.Controllers
 {
     public class SearchController : Controller
     {
-        private readonly IAPICall apiCall;
+        private readonly EdamamAPICaller apiCall;
 
-        public SearchController(IAPICall apiCall)
+        public SearchController(EdamamAPICaller apiCall)
         {
             this.apiCall = apiCall;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index(string cont)
         {
-            apiCall.RetrieveAllData();
-            return View();
+            Result model;
+            if (string.IsNullOrEmpty(cont))
+            {
+                model = await apiCall.RetrieveDrinkRecipes();
+            } else
+            {
+                model = await apiCall.RetrieveDrinkRecipes(cont);
+            }
+
+            return View(model);
         }
     }
 }

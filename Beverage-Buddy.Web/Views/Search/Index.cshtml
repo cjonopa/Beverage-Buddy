@@ -1,7 +1,15 @@
-﻿
+﻿@model Edamam.Result
+ 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Search</h1>
 
+<a asp-controller="Search" asp-action="Index" asp-route-cont="@Model._Links.Next">Next</a>
+<div class="row">
+    @foreach (var hit in Model.Hits)
+    {
+        <partial name="../Search/Partial/_HitCard" model="hit" />
+    }
+</div>
