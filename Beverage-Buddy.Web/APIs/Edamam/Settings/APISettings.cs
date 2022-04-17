@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beverage_Buddy.Web.Settings
+namespace Beverage_Buddy.Web.Edamam.Settings
 {
     public class APISettings
     {

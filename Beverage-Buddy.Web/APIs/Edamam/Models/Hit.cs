@@ -9,5 +9,6 @@ namespace Beverage_Buddy.Web.APIs.Edamam.Models
     public class Hit
     {
         public Recipe Recipe { get; set; }
+        public Link _Links { get; set; }
     }
 }

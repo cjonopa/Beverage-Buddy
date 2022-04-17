@@ -11,7 +11,7 @@ namespace Beverage_Buddy.Web.APIs.Edamam.Models
         public int From { get; set; }
         public int To { get; set; }
         public int Count { get; set; }
-        public string Link { get; set; }
-        public List<Recipe> Hits { get; set; }
+        public Link _Links { get; set; }
+        public ICollection<Hit> Hits { get; set; }
     }
 }

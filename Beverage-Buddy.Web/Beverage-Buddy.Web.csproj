@@ -24,8 +24,4 @@
     <ProjectReference Include="..\Beverage-Buddy.Data\Beverage-Buddy.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="APIs\Edamam\Settings\" />
-  </ItemGroup>
-
 </Project>
