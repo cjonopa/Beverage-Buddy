@@ -1,4 +1,3 @@
-using Beverage_Buddy.Data.Entities;
 using Beverage_Buddy.Data.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Beverage_Buddy.Data.Models;
 
 namespace Beverage_Buddy.Data
 {

@@ -1,6 +1,6 @@
-﻿using Beverage_Buddy.Data.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Beverage_Buddy.Data.Models;
 
 namespace Beverage_Buddy.Data.Services
 {

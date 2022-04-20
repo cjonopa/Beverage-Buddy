@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Beverage_Buddy.Web.Edamam.Settings
+﻿namespace Beverage_Buddy.Web.APIs.Edamam.Settings
 {
-    public class APISettings
+    public class ApiSettings
     {
         public string AppId { get; set; }
         public string AccessPoint { get; set; }

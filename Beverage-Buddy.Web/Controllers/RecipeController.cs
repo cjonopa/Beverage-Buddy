@@ -1,5 +1,4 @@
-﻿using Beverage_Buddy.Data.Entities;
-using Beverage_Buddy.Data.Services;
+﻿using Beverage_Buddy.Data.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -8,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Beverage_Buddy.Data.Models;
 
 namespace Beverage_Buddy.Web.Controllers
 {

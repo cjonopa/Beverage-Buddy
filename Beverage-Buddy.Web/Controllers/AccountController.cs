@@ -1,5 +1,4 @@
-﻿using Beverage_Buddy.Data.Entities;
-using Beverage_Buddy.Web.Models;
+﻿using Beverage_Buddy.Web.Models;
 using Beverage_Buddy.Web.Services;
 using Beverage_Buddy.Web.ViewModels;
 using Microsoft.AspNetCore.Identity;
@@ -9,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Beverage_Buddy.Data.Models;
 
 namespace Beverage_Buddy.Web.Controllers
 {

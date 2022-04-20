@@ -1,48 +1,63 @@
 ﻿using Beverage_Buddy.Web.APIs.Edamam.Models;
-using Beverage_Buddy.Web.Edamam.Settings;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Beverage_Buddy.Web.APIs.Edamam.Settings;
 
 namespace Beverage_Buddy.Web.APIs.Edamam
 {
-    public class EdamamAPICaller
+    /// <summary>
+    ///   EdamamApiCaller is a class used to call the Edamam Recipe Search API V2.
+    ///   <see href="https://developer.edamam.com/edamam-docs-recipe-api"/>
+    /// </summary>
+    public class EdamamApiCaller
     {
-        private readonly APISettings apiSettings;
+        private readonly ApiSettings apiSettings;
 
-        private string BaseUrl { get; set; }
+        private string BaseUrl { get; }
 
-        public EdamamAPICaller(IOptions<APISettings> apiSettings)
+
+        /// <summary>Initializes a new instance of the <see cref="EdamamApiCaller" /> class.</summary>
+        /// <param name="apiSettings">The API settings.</param>
+        public EdamamApiCaller(IOptions<ApiSettings> apiSettings)
         {
             this.apiSettings = apiSettings.Value;
             BaseUrl = this.apiSettings.AccessPoint;
-    }
+        }
 
-        public async Task<Result> RetrieveDrinkRecipes(string? cont = null)
+        /// <summary>Retrieves all drink recipes from the Edamam Recipe Search API.</summary>
+        /// <returns>
+        ///   <see cref="Task{T}" /> containing the hits of recipes found from the Edamam API.
+        /// </returns>
+        public Task<Result> RetrieveDrinkRecipes()
         {
-            string query = $"?type={apiSettings.Type}&app_key={apiSettings.AppKey}" +
-                    $"&app_id={apiSettings.AppId}&dishType={apiSettings.DishType}";
+            return RetrieveDrinkRecipes(null);
+        }
+
+
+        /// <summary>Retrieves all drink recipes from the Edamam Recipe Search API.</summary>
+        /// <returns>
+        ///   <see cref="Task{T}" /> containing the hits of recipes found from the Edamam API.
+        /// </returns>
+        public async Task<Result> RetrieveDrinkRecipes(string cont)
+        {
+            var query = $"?type={apiSettings.Type}&app_key={apiSettings.AppKey}" +
+                        $"&app_id={apiSettings.AppId}&dishType={apiSettings.DishType}";
 
             if (!string.IsNullOrEmpty(cont)) query += $"&_cont={cont}";
 
-            Result apiResult = new Result();
+            using var client = new HttpClient {BaseAddress = new Uri(BaseUrl)};
 
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(BaseUrl);
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            using var response = await client.GetAsync(query);
 
-                using (var response = await client.GetAsync(query))
-                {
-                    var apiResponse = response.Content.ReadAsStringAsync().Result;
-                    apiResult = JsonConvert.DeserializeObject<Result>(apiResponse);
-                }
-            }
+            var apiResponse = response.Content.ReadAsStringAsync().Result;
+            var apiResult = JsonConvert.DeserializeObject<Result>(apiResponse);
 
             return apiResult;
         }

@@ -1,9 +1,9 @@
-﻿using Beverage_Buddy.Data.Entities;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
+using Beverage_Buddy.Data.Models;
 
 namespace Beverage_Buddy.Data.Services
 {

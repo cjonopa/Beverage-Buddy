@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Beverage_Buddy.Data.Entities
+namespace Beverage_Buddy.Data.Models
 {
     public class RecipeUser : IdentityUser
     {
