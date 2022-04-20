@@ -1,4 +1,4 @@
-﻿namespace Beverage_Buddy.Data.Entities
+﻿namespace Beverage_Buddy.Data.Models
 {
     public enum DrinkType
     {

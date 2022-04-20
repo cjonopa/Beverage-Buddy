@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Beverage_Buddy.Data.Entities
+namespace Beverage_Buddy.Data.Models
 {
     public class Recipe
     {

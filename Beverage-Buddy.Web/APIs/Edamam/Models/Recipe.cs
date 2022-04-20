@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Beverage_Buddy.Web.APIs.Edamam.Models
 {
@@ -15,7 +12,7 @@ namespace Beverage_Buddy.Web.APIs.Edamam.Models
         public string Source { get; set; }
         public string Url { get; set; }
         public string ShareAs { get; set; }
-        public int Yeild { get; set; }
+        public double Yield { get; set; }
         public ICollection<string> IngredientLines { get; set; }
         public ICollection<Ingredient> Ingredients { get; set; }
         public float Calories { get; set; }
@@ -26,5 +23,14 @@ namespace Beverage_Buddy.Web.APIs.Edamam.Models
         public ICollection<string> CuisineType { get; set; }
         public ICollection<string> MealType { get; set; }
         public ICollection<string> DishType { get; set; }
+
+        public string Id
+        {
+            get
+            {
+                var indexOf = Uri?.IndexOf("#recipe_", StringComparison.Ordinal);
+                return indexOf != null ? Uri?[((int)indexOf + 8)..] : null;
+            }
+        }
     }
 }

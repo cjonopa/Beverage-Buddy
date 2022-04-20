@@ -1,9 +1,9 @@
-using Beverage_Buddy.Data.Entities;
+using Beverage_Buddy.Data.Models;
 using Beverage_Buddy.Data.Services;
 using Beverage_Buddy.Web.APIs;
 using Beverage_Buddy.Web.APIs.Edamam;
+using Beverage_Buddy.Web.APIs.Edamam.Settings;
 using Beverage_Buddy.Web.Settings;
-using Beverage_Buddy.Web.Edamam.Settings;
 using Beverage_Buddy.Web.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -51,8 +51,8 @@ namespace Beverage_Buddy.Web
                 services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
             }
 
-            services.AddScoped<EdamamAPICaller, EdamamAPICaller>();
-            services.Configure<APISettings>(configuration.GetSection("APISettings"));
+            services.AddScoped<EdamamApiCaller, EdamamApiCaller>();
+            services.Configure<ApiSettings>(configuration.GetSection("APISettings"));
 
             services.AddDbContext<BeverageBuddyDbContext>();
             
