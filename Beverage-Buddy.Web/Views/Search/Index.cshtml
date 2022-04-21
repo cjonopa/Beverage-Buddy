@@ -1,15 +1,22 @@
-﻿@model Edamam.Result
- 
+﻿@model DrinkListViewModel
+
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Search</h1>
-
-<a asp-controller="Search" asp-action="Index" asp-route-cont="@Model._Links.Next">Next</a>
+<form asp-action="Index" method="get">
+    <div class="input-group mb-3">
+        <input type="search" class="form-control w-75" placeholder="Search on.." name="search" value="@ViewData["currentFilter"]" />
+        <button type="submit" class="btn btn-outline-primary">Search</button>
+        <a asp-action="Index">Back to Full List</a>
+    </div>
+</form>
 <div class="row">
-    @foreach (var hit in Model.Hits)
+    @foreach (var drink in Model.Drinks)
     {
-        <partial name="../Search/Partial/_HitCard" model="hit" />
+        <partial name="../Search/Partial/_DrinkListCard" model="drink" />
     }
 </div>
+@{
+
+}
