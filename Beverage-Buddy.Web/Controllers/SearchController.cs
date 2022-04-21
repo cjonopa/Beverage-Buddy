@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using Beverage_Buddy.Web.APIs.Edamam;
-using Beverage_Buddy.Web.APIs.Edamam.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Beverage_Buddy.Web.APIs.CocktailDb;
+using Beverage_Buddy.Web.ViewModels;
 
 namespace Beverage_Buddy.Web.Controllers
 {
@@ -11,11 +11,11 @@ namespace Beverage_Buddy.Web.Controllers
     /// </summary>
     public class SearchController : Controller
     {
-        private readonly EdamamApiCaller apiCall;
+        private readonly CocktailDbAPICaller apiCall;
 
-        /// <summary>Initializes a new instance of the <see cref="SearchController" /> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="CocktailDbAPICaller" /> class.</summary>
         /// <param name="apiCall">The Edamam API caller for retrieving recipes.</param>
-        public SearchController(EdamamApiCaller apiCall)
+        public SearchController(CocktailDbAPICaller apiCall)
         {
             this.apiCall = apiCall;
         }
@@ -28,24 +28,24 @@ namespace Beverage_Buddy.Web.Controllers
         /// of <see cref="Result"/> with the list of recipes.
         /// </returns>
         [HttpGet]
-        public async Task<IActionResult> Index(string cont)
+        public async Task<IActionResult> Index(string search)
         {
-            Result model;
-            if (string.IsNullOrEmpty(cont))
+            var model = new DrinkListViewModel(await apiCall.GetDrinkList());
+
+            if (!string.IsNullOrEmpty(search))
             {
-                model = await apiCall.RetrieveDrinkRecipes();
-            } else
-            {
-                model = await apiCall.RetrieveDrinkRecipes(cont);
+                model.Drinks = model.Drinks.Where(s => s.DrinkName.Contains(search));
             }
 
             return View(model);
         }
 
         [HttpGet]
-        public IActionResult Details(string id)
+        public async Task<IActionResult> Details(string id)
         {
-            throw new System.NotImplementedException();
+            var model = await apiCall.GetDrinkDetails(id);
+
+            return View(model);
         }
     }
 }

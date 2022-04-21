@@ -1,0 +1,8 @@
+﻿@model Cocktail.Drink
+
+<div class="col-sm-3 col-lg-3 col-md-3 text-center">
+    <a asp-controller="Search" asp-action="Details" asp-route-id="@Model.Id">
+        <img style="width: 200px; height: 200px;" alt="@Model.DrinkName" src="@Model.DrinkThumb" />
+        <h4>@Model.DrinkName</h4>
+    </a>
+</div>
