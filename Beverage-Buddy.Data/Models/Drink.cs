@@ -8,11 +8,13 @@ namespace Beverage_Buddy.Data.Models
     public class Drink
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string Id { get; set; }
         [Required]
         [MaxLength(255)]
+        [Display(Name = "Drink Name")]
         public string DrinkName { get; set; }
+        [Display(Name = "Drink Alternate")]
         public string DrinkAlternate { get; set; }
         public string Tags { get; set; }
         public string Video { get; set; }
@@ -22,6 +24,7 @@ namespace Beverage_Buddy.Data.Models
         public string Glass { get; set; }
         public string Instructions { get; set; }
         public string DrinkThumb { get; set; }
+        [Display(Name = "Drink Ingredients")]
         public List<DrinkIngredient> DrinkIngredients { get; set; }
         public string ImageSource { get; set; }
         public string ImageAttribution { get; set; }

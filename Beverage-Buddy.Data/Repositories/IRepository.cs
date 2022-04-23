@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Beverage_Buddy.Data.Repositories
 {
@@ -8,7 +9,7 @@ namespace Beverage_Buddy.Data.Repositories
     /// <typeparam name="TK">The type of the key to be used for the repository</typeparam>
     public interface IRepository<T, in TK>
     {
-        IEnumerable<T> GetAll();
+        Task<ICollection<T>> GetAll();
         T Get(TK id);
         void Add(T item);
         void Update(T item);

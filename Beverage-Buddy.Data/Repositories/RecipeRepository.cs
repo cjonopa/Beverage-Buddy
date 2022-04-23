@@ -1,9 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
+using System.Threading.Tasks;
 using Beverage_Buddy.Data.Models;
 using Beverage_Buddy.Data.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Beverage_Buddy.Data.Repositories
 {
@@ -64,15 +67,15 @@ namespace Beverage_Buddy.Data.Repositories
             }
         }
 
-        public IEnumerable<Recipe> GetAll()
+        public async Task<ICollection<Recipe>> GetAll()
         {
             try
             {
                 logger.LogInformation("Recipe : GetAll was called.");
 
-                return from r in db.Recipes
-                       orderby r.Name
-                       select r;
+                var recipe = 
+                    await db.Recipes.OrderBy(r => r.Name).ToListAsync();
+                return recipe;
             }
             catch (Exception ex)
             {

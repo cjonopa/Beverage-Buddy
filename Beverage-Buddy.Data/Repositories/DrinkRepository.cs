@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Beverage_Buddy.Data.Models;
 using Beverage_Buddy.Data.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Beverage_Buddy.Data.Repositories
@@ -18,15 +20,14 @@ namespace Beverage_Buddy.Data.Repositories
             this.logger = logger;
         }
 
-        public IEnumerable<Drink> GetAll()
+        public async Task<ICollection<Drink>> GetAll()
         {
             try
             {
                 logger.LogInformation("Drink : GetAll was called.");
 
-                return from d in db.Drinks
-                    orderby d.DrinkName
-                    select d;
+                var drinks = await db.Drinks.Include(d => d.DrinkIngredients).ToListAsync();
+                return drinks;
             }
             catch (Exception ex)
             {
@@ -41,7 +42,7 @@ namespace Beverage_Buddy.Data.Repositories
             {
                 logger.LogInformation("Drink : Get was called.");
 
-                return db.Drinks.FirstOrDefault(d => d.Id == id);
+                return db.Drinks.Include(d => d.DrinkIngredients).FirstOrDefault(d => d.Id == id);
             }
             catch (Exception ex)
             {

@@ -1,27 +1,36 @@
-﻿@using Beverage_Buddy.Web.Extensions
-@model DrinkListViewModel
+﻿@model DrinkListViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
 <form asp-action="Index" class="col-md-6 offset-3 text-center p-3 border border-1" method="get">
+    <div class="row mb-3">
+        <div class="col-6">
+            <label for="searchName" class="form-label">Search on Name:</label>
+        </div>
+        <div class="col-6">
+            <input type="search" class="form-control" placeholder="drink name" id="searchName" name="searchName" 
+                   value="@ViewData["CurrentNameFilter"]" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-6">
+            <label for="searchIngredient" class="form-label">Search on Ingredient:</label>
+        </div>
+        <div class="col-6 mb-3">
+            <input type="search" class="form-control" placeholder="drink ingredient" id="searchIngredient" 
+                   name="searchIngredient" value="@ViewData["CurrentIngredientFilter"]" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-12">
+            <button type="submit" class="btn btn-outline-primary">Search</button>
+        </div>
+    </div>
     <div class="row">
-        <div class="col-6 mb-3">
-            <label for="search" class="form-label">Search on Name:</label>
-        </div>
-        <div class="col-6 mb-3">
-            <input type="search" class="form-control" placeholder="Search on.." id="search" name="search" />
-        </div>
-        <div class="row mb-3">
-            <div class="col-12">
-                <button type="submit" class="btn btn-outline-primary">Search</button>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <a asp-action="Index" class="btn btn-outline-secondary">Back to Full List</a>
-            </div>
+        <div class="col-12">
+            <a asp-action="Index" class="btn btn-outline-secondary">Back to Full List</a>
         </div>
     </div>
 </form>
@@ -31,3 +40,8 @@
         <partial name="../Search/Partial/_DrinkListCard" model="drink" />
     }
 </div>
+
+@for (var p = 1; p <= Model.Pages; p++)
+{
+    <a href="@Url.Action("Index", new { page = p })" class="btn btn-outline-primary">@p</a>
+}
