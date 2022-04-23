@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,6 +17,9 @@ namespace Beverage_Buddy.Data.Models
 
         public bool Alcoholic { get; set; }
 
+        [MaxLength(int.MaxValue)]
+        public string Instructions { get; set; }
+
         [Required]
         [Display(Name="Type of Drink")]
         public DrinkType DrinkType { get; set; }
@@ -23,5 +27,7 @@ namespace Beverage_Buddy.Data.Models
         public IEnumerable<RecipeIngredient> Ingredients { get; set; }
 
         public RecipeUser User { get; set; }
+        [MaxLength(int.MaxValue)]
+        public string RecipeThumb { get; set; }
     }
 }

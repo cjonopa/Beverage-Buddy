@@ -1,24 +1,40 @@
 ﻿@model Recipe
 
 <div class="card mx-auto" style="width: 18rem;">
-    <img src="..." class="card-img-top" alt="...">
+    <img src="@Model.RecipeThumb" class="card-img-top" alt="@Model.Name">
     <div class="card-body">
         <h5 class="card-title">
-        @Html.DisplayFor(model => model.Name)
-        <span class="float-end">
-        <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" fill="currentColor" class="bi bi-emoji-dizzy" viewBox="0 0 16 16">
-            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-            <path d="M9.146 5.146a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708.708l-.647.646.647.646a.5.5 0 0 1-.708.708l-.646-.647-.646.647a.5.5 0 1 1-.708-.708l.647-.646-.647-.646a.5.5 0 0 1 0-.708zm-5 0a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 1 1 .708.708l-.647.646.647.646a.5.5 0 1 1-.708.708L5.5 7.207l-.646.647a.5.5 0 1 1-.708-.708l.647-.646-.647-.646a.5.5 0 0 1 0-.708zM10 11a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" />
-        </svg>
-        </span>
+            @Html.DisplayFor(model => model.Name)
+            @if (@Model.Alcoholic)
+            {
+                <span class="badge bg-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" fill="currentColor" class="bi bi-emoji-dizzy" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                        <path d="M9.146 5.146a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708.708l-.647.646.647.646a.5.5 0 0 1-.708.708l-.646-.647-.646.647a.5.5 0 1 1-.708-.708l.647-.646-.647-.646a.5.5 0 0 1 0-.708zm-5 0a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 1 1 .708.708l-.647.646.647.646a.5.5 0 1 1-.708.708L5.5 7.207l-.646.647a.5.5 0 1 1-.708-.708l.647-.646-.647-.646a.5.5 0 0 1 0-.708zM10 11a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" />
+                    </svg>
+                </span>
+            }
         </h5>
-        <p class="card-text">Beverage Description goes here.</p>
     </div>
-    <ul class="list-group list-group-flush">
-        <li class="list-group-item">Ingredient 1</li>
-        <li class="list-group-item">Ingredient 2</li>
-        <li class="list-group-item">Ingredient 3</li>
-    </ul>
+    <div class="card-body">
+        <h5 class="card-title text-center text-secondary">
+            @Html.DisplayNameFor(model => model.Instructions)
+        </h5>
+        <p class="card-text">
+            @Html.DisplayFor(model => model.Instructions)
+        </p>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title text-center text-primary">
+            @Html.DisplayNameFor(model => model.Ingredients)
+        </h5>
+        <ul class="=list-group list-group-flush">
+            @foreach (var ingredient in @Model.Ingredients)
+            {
+                <li class="list-group-item">@ingredient.Amount</li>
+            }
+        </ul>
+    </div>
     <div class="card-body">
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-dark">Edit</a>
         <a asp-action="Index" class="btn btn-outline-dark">Back to List</a>

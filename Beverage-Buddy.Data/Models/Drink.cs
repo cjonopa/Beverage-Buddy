@@ -26,6 +26,7 @@ namespace Beverage_Buddy.Data.Models
         public string DrinkThumb { get; set; }
         [Display(Name = "Drink Ingredients")]
         public List<DrinkIngredient> DrinkIngredients { get; set; }
+        [MaxLength(int.MaxValue)]
         public string ImageSource { get; set; }
         public string ImageAttribution { get; set; }
         public bool CreativeCommonsConfirmed { get; set; }

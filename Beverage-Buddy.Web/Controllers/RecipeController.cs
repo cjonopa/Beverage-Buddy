@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Beverage_Buddy.Data.Models;
 using Beverage_Buddy.Data.Repositories;
+using Beverage_Buddy.Web.ViewModels;
 
 namespace Beverage_Buddy.Web.Controllers
 {
@@ -16,9 +20,27 @@ namespace Beverage_Buddy.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult Index()
+        public async Task<IActionResult> Index(string searchName, int page)
         {
-            var model = db.GetAll();
+            ViewData["CurrentNameFilter"] = searchName;
+
+            var recipes = await db.GetAll();
+
+            if (recipes == null) return View();
+
+            if (!string.IsNullOrEmpty(searchName))
+            {
+                recipes = recipes.Where(s => s.Name.ToLower().Contains(searchName.ToLower())).ToList();
+            }
+
+            var pageResults = 20;
+            var pageCount = Math.Ceiling(recipes.Count() / (double)pageResults);
+
+            recipes = recipes
+                .Skip((page - 1) * pageResults)
+                .Take(pageResults).ToList();
+
+            var model = new RecipeListViewModel(recipes);
             return View(model);
         }
 

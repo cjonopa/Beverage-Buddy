@@ -58,7 +58,9 @@ namespace Beverage_Buddy.Data.Repositories
             {
                 logger.LogInformation("Recipe : Get was called.");
 
-                return db.Recipes.FirstOrDefault(r => r.Id == id);
+                return db.Recipes                
+                    .Include(r => r.Ingredients)
+                    .FirstOrDefault(r => r.Id == id);
             }
             catch (Exception ex)
             {
@@ -74,7 +76,11 @@ namespace Beverage_Buddy.Data.Repositories
                 logger.LogInformation("Recipe : GetAll was called.");
 
                 var recipe = 
-                    await db.Recipes.OrderBy(r => r.Name).ToListAsync();
+                    await db.Recipes
+                        .OrderBy(r => r.Name)                    
+                        .Include(r => r.Ingredients)                        
+                        .ToListAsync();
+
                 return recipe;
             }
             catch (Exception ex)

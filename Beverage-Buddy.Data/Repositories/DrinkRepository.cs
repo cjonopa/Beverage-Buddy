@@ -26,7 +26,12 @@ namespace Beverage_Buddy.Data.Repositories
             {
                 logger.LogInformation("Drink : GetAll was called.");
 
-                var drinks = await db.Drinks.Include(d => d.DrinkIngredients).ToListAsync();
+                var drinks = await db
+                    .Drinks
+                    .OrderBy(d => d.DrinkName)
+                    .Include(d => d.DrinkIngredients)
+                    .ToListAsync();
+
                 return drinks;
             }
             catch (Exception ex)

@@ -13,5 +13,10 @@ namespace Beverage_Buddy.Web.Models
         public string Subject { get; set; }
         public string Body { get; set; }
         public List<IFormFile> Attachments { get; set; }
+
+        public MailRequest()
+        {
+            Attachments = new List<IFormFile>();
+        }
     }
 }

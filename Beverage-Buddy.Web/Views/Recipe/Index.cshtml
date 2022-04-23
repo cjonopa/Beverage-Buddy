@@ -1,47 +1,38 @@
-﻿@model IEnumerable<Recipe>
+﻿@model RecipeListViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<form asp-action="Index" class="col-md-6 offset-3 text-center p-3 border border-1" method="get">
+    <div class="row mb-3">
+        <div class="col-6">
+            <label for="searchName" class="form-label">Search on Name:</label>
+        </div>
+        <div class="col-6">
+            <input type="search" class="form-control" placeholder="drink name" id="searchName" name="searchName"
+                   value="@ViewData["CurrentNameFilter"]" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-12">
+            <button type="submit" class="btn btn-outline-primary">Search</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <a asp-action="Index" class="btn btn-outline-secondary">Back to Full List</a>
+        </div>
+    </div>
+</form>
+<div class="row">
+    @foreach (var drink in Model.Recipes)
+    {
+        <partial name="../Recipe/Partial/_RecipeListCard" model="drink" />
+    }
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table table-responsive">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Alcoholic)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DrinkType)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Alcoholic)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DrinkType)
-            </td>
-            <td>
-                <a asp-action="Edit" class="btn btn-link" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" class="btn btn-link" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" class="btn btn-link" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+@for (var p = 1; p <= Model.Pages; p++)
+{
+    <a href="@Url.Action("Index", new { page = p })" class="btn btn-outline-primary">@p</a>
 }
-    </tbody>
-</table>
