@@ -1,7 +1,6 @@
 using Beverage_Buddy.Data.Models;
+using Beverage_Buddy.Data.Repositories;
 using Beverage_Buddy.Data.Services;
-using Beverage_Buddy.Web.APIs.CocktailDb;
-using Beverage_Buddy.Web.APIs.CocktailDb.Settings;
 using Beverage_Buddy.Web.Settings;
 using Beverage_Buddy.Web.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -50,12 +49,10 @@ namespace Beverage_Buddy.Web
                 services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
             }
 
-            services.AddScoped<CocktailDbAPICaller, CocktailDbAPICaller>();
-            services.Configure<ApiSettings>(configuration.GetSection("APISettings"));
-
             services.AddDbContext<BeverageBuddyDbContext>();
             
-            services.AddScoped<IRecipeRepository, RecipeRepository>();
+            services.AddScoped<IRepository<Recipe, int>, RecipeRepository>();
+            services.AddScoped<IRepository<Drink, string>, DrinkRepository>();
 
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();

@@ -1,7 +1,8 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Beverage_Buddy.Web.APIs.CocktailDb;
+using Beverage_Buddy.Data.Models;
+using Beverage_Buddy.Data.Repositories;
 using Beverage_Buddy.Web.ViewModels;
 
 namespace Beverage_Buddy.Web.Controllers
@@ -11,13 +12,11 @@ namespace Beverage_Buddy.Web.Controllers
     /// </summary>
     public class SearchController : Controller
     {
-        private readonly CocktailDbAPICaller apiCall;
+        private readonly IRepository<Drink, string> db;
 
-        /// <summary>Initializes a new instance of the <see cref="CocktailDbAPICaller" /> class.</summary>
-        /// <param name="apiCall">The Edamam API caller for retrieving recipes.</param>
-        public SearchController(CocktailDbAPICaller apiCall)
+        public SearchController(IRepository<Drink, string> db)
         {
-            this.apiCall = apiCall;
+            this.db = db;
         }
 
         /// <summary>Index is used to display a list of recipes.</summary>
@@ -28,9 +27,9 @@ namespace Beverage_Buddy.Web.Controllers
         /// of <see cref="Result"/> with the list of recipes.
         /// </returns>
         [HttpGet]
-        public async Task<IActionResult> Index(string search)
+        public IActionResult Index(string search)
         {
-            var model = new DrinkListViewModel(await apiCall.GetDrinkList());
+            var model = new DrinkListViewModel(db.GetAll());
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -41,9 +40,9 @@ namespace Beverage_Buddy.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details(string id)
+        public IActionResult Details(string id)
         {
-            var model = await apiCall.GetDrinkDetails(id);
+            var model = db.Get(id);
 
             return View(model);
         }

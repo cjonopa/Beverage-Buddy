@@ -1,0 +1,99 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Beverage_Buddy.Data.Models;
+using Beverage_Buddy.Data.Services;
+using Microsoft.Extensions.Logging;
+
+namespace Beverage_Buddy.Data.Repositories
+{
+    public class DrinkRepository : IRepository<Drink, string>
+    {
+        private readonly BeverageBuddyDbContext db;
+        private readonly ILogger<DrinkRepository> logger;
+
+        public DrinkRepository(BeverageBuddyDbContext db, ILogger<DrinkRepository> logger)
+        {
+            this.db = db;
+            this.logger = logger;
+        }
+
+        public IEnumerable<Drink> GetAll()
+        {
+            try
+            {
+                logger.LogInformation("Drink : GetAll was called.");
+
+                return from d in db.Drinks
+                    orderby d.DrinkName
+                    select d;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to get all drinks: {ex}");
+                return null;
+            }
+        }
+
+        public Drink Get(string id)
+        {
+            try
+            {
+                logger.LogInformation("Drink : Get was called.");
+
+                return db.Drinks.FirstOrDefault(d => d.Id == id);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to get drink: {ex}");
+                return null;
+            }
+        }
+
+        public void Add(Drink item)
+        {
+            try
+            {
+                logger.LogInformation("Recipe : Add was called.");
+
+                db.Drinks.Add(item);
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to add drink: {ex}");
+            }
+        }
+
+        public void Update(Drink item)
+        {
+            try
+            {
+                logger.LogInformation("Drink : Update was called.");
+
+                var entry = db.Entry(item);
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to update drink: {ex}");
+            }
+        }
+
+        public void Delete(string id)
+        {
+            try
+            {
+                logger.LogInformation("Drink : Delete was called.");
+
+                var drink = db.Drinks.Find(id);
+                db.Drinks.Remove(drink);
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to delete item: {ex}");
+            }
+        }
+    }
+}

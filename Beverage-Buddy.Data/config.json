@@ -7,5 +7,9 @@
 			"Default": "Information",
 			"Microsoft": "Warning"
 		}
-	}
+	},
+  "APISettings": {
+    "AccessPoint": "https://www.thecocktaildb.com/api/json/v2",
+    "AppKey": "9973533"
+  }
 }

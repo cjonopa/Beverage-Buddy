@@ -1,4 +1,4 @@
-﻿@model Cocktail.Drink
+﻿@model Drink
 
 @{
     ViewBag.Title = "Recipe Details";
@@ -31,10 +31,10 @@
     </div>
     <div class="card-body">
         <h5 class="card-title text-center text-primary">
-            @Html.DisplayNameFor(model => model.Ingredients)
+            @Html.DisplayNameFor(model => model.DrinkIngredients)
         </h5>
         <ul class="=list-group list-group-flush">
-            @foreach (var ingredient in @Model.Ingredients)
+            @foreach (var ingredient in @Model.DrinkIngredients)
             {
                 <li class="list-group-item">@ingredient</li>
             }

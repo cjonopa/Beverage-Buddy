@@ -1,4 +1,4 @@
-﻿namespace Beverage_Buddy.Web.APIs.CocktailDb.Settings
+﻿namespace Beverage_Buddy.Data.APIs.CocktailDb.Settings
 {
     public class ApiSettings
     {

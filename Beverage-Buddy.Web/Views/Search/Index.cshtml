@@ -1,14 +1,28 @@
-﻿@model DrinkListViewModel
+﻿@using Beverage_Buddy.Web.Extensions
+@model DrinkListViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<form asp-action="Index" method="get">
-    <div class="input-group mb-3">
-        <input type="search" class="form-control w-75" placeholder="Search on.." name="search" value="@ViewData["currentFilter"]" />
-        <button type="submit" class="btn btn-outline-primary">Search</button>
-        <a asp-action="Index">Back to Full List</a>
+<form asp-action="Index" class="col-md-6 offset-3 text-center p-3 border border-1" method="get">
+    <div class="row">
+        <div class="col-6 mb-3">
+            <label for="search" class="form-label">Search on Name:</label>
+        </div>
+        <div class="col-6 mb-3">
+            <input type="search" class="form-control" placeholder="Search on.." id="search" name="search" />
+        </div>
+        <div class="row mb-3">
+            <div class="col-12">
+                <button type="submit" class="btn btn-outline-primary">Search</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <a asp-action="Index" class="btn btn-outline-secondary">Back to Full List</a>
+            </div>
+        </div>
     </div>
 </form>
 <div class="row">
@@ -17,6 +31,3 @@
         <partial name="../Search/Partial/_DrinkListCard" model="drink" />
     }
 </div>
-@{
-
-}

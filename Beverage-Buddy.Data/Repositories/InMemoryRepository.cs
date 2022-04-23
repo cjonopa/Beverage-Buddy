@@ -2,13 +2,13 @@
 using System.Linq;
 using Beverage_Buddy.Data.Models;
 
-namespace Beverage_Buddy.Data.Services
+namespace Beverage_Buddy.Data.Repositories
 {
-    public class InMemoryRecipeRepository : IRecipeRepository
+    public class InMemoryRepository : IRepository<Recipe, int>
     {
-        private List<Recipe> recipes;
+        private readonly List<Recipe> recipes;
 
-        public InMemoryRecipeRepository()
+        public InMemoryRepository()
         {
             recipes = new List<Recipe>()
             {
@@ -33,10 +33,10 @@ namespace Beverage_Buddy.Data.Services
             };
         }
 
-        public void Add(Recipe recipe)
+        public void Add(Recipe item)
         {
-            recipes.Add(recipe);
-            recipe.Id = recipes.Max(r => r.Id) + 1;
+            recipes.Add(item);
+            item.Id = recipes.Max(r => r.Id) + 1;
         }
 
         public void Delete(int id)
@@ -58,19 +58,14 @@ namespace Beverage_Buddy.Data.Services
             return recipes.OrderBy(r => r.Name);
         }
 
-        public bool SaveAll()
+        public void Update(Recipe item)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public void Update(Recipe recipe)
-        {
-            var existing = Get(recipe.Id);
+            var existing = Get(item.Id);
             if (existing != null)
             {
-                existing.Name = recipe.Name;
-                existing.DrinkType = recipe.DrinkType;
-                existing.Alcoholic = recipe.Alcoholic;
+                existing.Name = item.Name;
+                existing.DrinkType = item.DrinkType;
+                existing.Alcoholic = item.Alcoholic;
             }
         }
 

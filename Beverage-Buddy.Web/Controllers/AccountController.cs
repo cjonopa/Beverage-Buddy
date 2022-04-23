@@ -4,8 +4,6 @@ using Beverage_Buddy.Web.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Beverage_Buddy.Data.Models;
@@ -61,7 +59,7 @@ namespace Beverage_Buddy.Web.Controllers
                         {
                             To = model.Email,
                             Subject = "Registration",
-                            Body = "You have successfully registerd with FridgeMeal."
+                            Body = "You have successfully registered with FridgeMeal."
                         });
 
                     return RedirectToAction("Index", "Home");
@@ -78,7 +76,7 @@ namespace Beverage_Buddy.Web.Controllers
 
         public IActionResult Login()
         {
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Home");
             }

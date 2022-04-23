@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
 using Beverage_Buddy.Data.Models;
 
 namespace Beverage_Buddy.Data.Services
@@ -19,6 +18,8 @@ namespace Beverage_Buddy.Data.Services
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<RecipeIngredient> RecipeIngredients { get; set; }
+        public DbSet<Drink> Drinks { get; set; }
+        public DbSet<DrinkIngredient> DrinkIngredients { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

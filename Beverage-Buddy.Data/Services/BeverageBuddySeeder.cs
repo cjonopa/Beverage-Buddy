@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Beverage_Buddy.Data.APIs.CocktailDb;
 using Beverage_Buddy.Data.Models;
 
 namespace Beverage_Buddy.Data.Services
@@ -16,23 +16,28 @@ namespace Beverage_Buddy.Data.Services
         private readonly BeverageBuddyDbContext ctx;
         private readonly IWebHostEnvironment env;
         private readonly UserManager<RecipeUser> userManager;
+        private readonly CocktailDbApiCaller apiCaller;
 
-        public BeverageBuddySeeder(BeverageBuddyDbContext ctx, IWebHostEnvironment env, UserManager<RecipeUser> userManager)
+        public BeverageBuddySeeder(BeverageBuddyDbContext ctx, 
+            IWebHostEnvironment env, 
+            UserManager<RecipeUser> userManager, 
+            CocktailDbApiCaller apiCaller)
         {
             this.ctx = ctx;
             this.env = env;
             this.userManager = userManager;
+            this.apiCaller = apiCaller;
         }
 
         public async Task SeedSamplesAsync()
         {
-            ctx.Database.EnsureCreated();
+            await ctx.Database.EnsureCreatedAsync();
 
-            RecipeUser user = await userManager.FindByEmailAsync("guest@beveragebuddy.com");
+            var user = await userManager.FindByEmailAsync("guest@beveragebuddy.com");
 
             if (user == null)
             {
-                user = new RecipeUser()
+                user = new RecipeUser
                 {
                     FirstName = "Guest",
                     LastName = "User",
@@ -51,41 +56,51 @@ namespace Beverage_Buddy.Data.Services
             if (!ctx.Ingredients.Any())
             {
                 var filePath = Path.Combine(env.ContentRootPath, "SeedData/ingredients.json");
-                var json = File.ReadAllText(filePath);
+                var json = await File.ReadAllTextAsync(filePath);
 
                 var ingredients = JsonSerializer.Deserialize<IEnumerable<Ingredient>>(json);
 
-                ctx.Ingredients.AddRange(ingredients);
+                await ctx.Ingredients.AddRangeAsync(ingredients);
 
-                ctx.SaveChanges();
+                await ctx.SaveChangesAsync();
             }
 
             if (!ctx.Recipes.Any())
             {
                 var filePath = Path.Combine(env.ContentRootPath, "SeedData/recipes.json");
-                var json = File.ReadAllText(filePath);
+                var json = await File.ReadAllTextAsync(filePath);
 
                 var recipes = JsonSerializer.Deserialize<IEnumerable<Recipe>>(json);
-                foreach (var r in recipes)
+                var enumerable = recipes as Recipe[] ?? recipes.ToArray();
+
+                foreach (var r in enumerable)
                 {
                     r.User = user;
                 }
 
-                ctx.Recipes.AddRange(recipes);
+                await ctx.Recipes.AddRangeAsync(enumerable);
 
-                ctx.SaveChanges();
+                await ctx.SaveChangesAsync();
             }
 
             if (!ctx.RecipeIngredients.Any())
             {
                 var filePath = Path.Combine(env.ContentRootPath, "SeedData/recipeIngredients.json");
-                var json = File.ReadAllText(filePath);
+                var json = await File.ReadAllTextAsync(filePath);
 
                 var recipeIngredients = JsonSerializer.Deserialize<IEnumerable<RecipeIngredient>>(json);
 
-                ctx.RecipeIngredients.AddRange(recipeIngredients);
+                await ctx.RecipeIngredients.AddRangeAsync(recipeIngredients);
 
-                ctx.SaveChanges();
+                await ctx.SaveChangesAsync();
+            }
+
+            if (!ctx.Drinks.Any())
+            {
+                var cocktails = await apiCaller.GetDrinkList();
+
+                await ctx.Drinks.AddRangeAsync(cocktails);
+                await ctx.SaveChangesAsync();
             }
         }
     }

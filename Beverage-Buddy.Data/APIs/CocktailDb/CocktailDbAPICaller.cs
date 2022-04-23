@@ -3,27 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
-using Beverage_Buddy.Web.APIs.CocktailDb.Models;
-using Beverage_Buddy.Web.APIs.CocktailDb.Settings;
+using Beverage_Buddy.Data.APIs.CocktailDb.Models;
+using Beverage_Buddy.Data.APIs.CocktailDb.Settings;
+using Beverage_Buddy.Data.Models;
+using Beverage_Buddy.Data.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
-namespace Beverage_Buddy.Web.APIs.CocktailDb
+namespace Beverage_Buddy.Data.APIs.CocktailDb
 {
-    public class CocktailDbAPICaller
+    public class CocktailDbApiCaller
     {
-        private readonly ApiSettings apiSettings;
+        private readonly IConverterService<Drink, DrinkResult> converterService;
         public string BaseUrl { get; }
 
-        public CocktailDbAPICaller(IOptions<ApiSettings> apiSettings)
+        public CocktailDbApiCaller(IOptions<ApiSettings> apiSettings, IConverterService<Drink, DrinkResult> converterService)
         {
-            this.apiSettings = apiSettings.Value;
-            BaseUrl = $"{this.apiSettings.AccessPoint}/{this.apiSettings.AppKey}/";
+            this.converterService = converterService;
+            BaseUrl = $"{apiSettings.Value.AccessPoint}/{apiSettings.Value.AppKey}/";
         }
 
-        public async Task<List<Drink>> GetDrinkList()
+        public async Task<IEnumerable<Drink>> GetDrinkList()
         {
             var drinks = new List<Drink>();
 
@@ -44,7 +45,8 @@ namespace Beverage_Buddy.Web.APIs.CocktailDb
 
                 if (apiResult?.Drinks == null) continue;
 
-                drinks.AddRange(apiResult.Drinks.Select(drinkResult => new Drink(drinkResult)));
+                drinks.AddRange(apiResult.Drinks.Select(
+                    drinkResult => converterService.ConvertResult(new Drink(), drinkResult)));
             }
 
             return drinks;
@@ -63,7 +65,7 @@ namespace Beverage_Buddy.Web.APIs.CocktailDb
             var apiResponse = response.Content.ReadAsStringAsync().Result;
             var apiResult = JsonConvert.DeserializeObject<CocktailResult>(apiResponse);
 
-            var drink = new Drink(apiResult.Drinks[0]);
+            var drink = converterService.ConvertResult(new Drink(), apiResult.Drinks.FirstOrDefault());
 
             return drink;
         }

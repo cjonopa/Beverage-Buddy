@@ -3,7 +3,6 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using System.IO;
 
 namespace Beverage_Buddy.Data
@@ -28,11 +27,9 @@ namespace Beverage_Buddy.Data
         {
             var scopeFactory = host.Services.GetService<IServiceScopeFactory>();
 
-            using (var scope = scopeFactory.CreateScope())
-            {
-                var seeder = scope.ServiceProvider.GetService<BeverageBuddySeeder>();
-                seeder.SeedSamplesAsync().Wait();
-            }
+            using var scope = scopeFactory.CreateScope();
+            var seeder = scope.ServiceProvider.GetService<BeverageBuddySeeder>();
+            seeder.SeedSamplesAsync().Wait();
         }
 
         public static IWebHost BuildWebHost(string[] args) =>
