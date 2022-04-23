@@ -52,19 +52,6 @@ namespace Beverage_Buddy.Data.Services
                 }
             }
 
-            // Need to create sample data
-            if (!ctx.Ingredients.Any())
-            {
-                var filePath = Path.Combine(env.ContentRootPath, "SeedData/ingredients.json");
-                var json = await File.ReadAllTextAsync(filePath);
-
-                var ingredients = JsonSerializer.Deserialize<IEnumerable<Ingredient>>(json);
-
-                await ctx.Ingredients.AddRangeAsync(ingredients);
-
-                await ctx.SaveChangesAsync();
-            }
-
             if (!ctx.Recipes.Any())
             {
                 var filePath = Path.Combine(env.ContentRootPath, "SeedData/recipes.json");
@@ -83,14 +70,15 @@ namespace Beverage_Buddy.Data.Services
                 await ctx.SaveChangesAsync();
             }
 
-            if (!ctx.RecipeIngredients.Any())
+            // Need to create sample data
+            if (!ctx.Ingredients.Any())
             {
-                var filePath = Path.Combine(env.ContentRootPath, "SeedData/recipeIngredients.json");
+                var filePath = Path.Combine(env.ContentRootPath, "SeedData/ingredients.json");
                 var json = await File.ReadAllTextAsync(filePath);
 
-                var recipeIngredients = JsonSerializer.Deserialize<IEnumerable<RecipeIngredient>>(json);
+                var ingredients = JsonSerializer.Deserialize<IEnumerable<Ingredient>>(json);
 
-                await ctx.RecipeIngredients.AddRangeAsync(recipeIngredients);
+                await ctx.Ingredients.AddRangeAsync(ingredients);
 
                 await ctx.SaveChangesAsync();
             }

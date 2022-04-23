@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Beverage_Buddy.Web.Services
 {
-    public class NullMailService : IMailService
+    public class NullMailService : Controller, IMailService
     {
         private readonly ILogger<NullMailService> logger;
 
@@ -20,7 +21,7 @@ namespace Beverage_Buddy.Web.Services
         public Task SendEmailAsync(MailRequest mailRequest)
         {
             logger.LogInformation($"To: {mailRequest.To} Subject: {mailRequest.Subject} Body: {mailRequest.Body}");
-            return null;
+            return Task.CompletedTask;
         }
 
         public void SendMessage(string to, string subject, string body)

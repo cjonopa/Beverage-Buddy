@@ -1,11 +1,27 @@
 [
   {
-    "Name": "Orange Concentrate"
+    "Name": "Orange Concentrate",
+    "Amount": "16 oz.",
+    "RecipeId": 1
   },
   {
-    "Name": "Vodka"
+    "Name": "Orange Concentrate",
+    "Amount": "15 oz.",
+    "RecipeId": 2
   },
   {
-    "Name": "Peach Schnapps"
+    "Name": "Orange Concentrate",
+    "Amount": "15 oz.",
+    "RecipeId": 3
+  },
+  {
+    "Name": "Vodka",
+    "Amount": "1 oz.",
+    "RecipeId": 2
+  },
+  {
+    "Name": "Peach Schnapps",
+    "Amount": "1 oz.",
+    "RecipeId": 3
   }
 ]

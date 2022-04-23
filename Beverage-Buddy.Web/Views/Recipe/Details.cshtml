@@ -31,7 +31,7 @@
         <ul class="=list-group list-group-flush">
             @foreach (var ingredient in @Model.Ingredients)
             {
-                <li class="list-group-item">@ingredient.Amount</li>
+                <li class="list-group-item">@ingredient.Amount - @ingredient.Name</li>
             }
         </ul>
     </div>

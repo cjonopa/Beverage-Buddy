@@ -14,6 +14,8 @@ namespace Beverage_Buddy.Data.Models
         [MaxLength(255)]
         public string Name { get; set; }
 
-        public IEnumerable<RecipeIngredient> Recipes { get; set; }
+        public string Amount { get; set; }
+
+        public int RecipeId { get; set; }
     }
 }

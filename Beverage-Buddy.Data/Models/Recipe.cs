@@ -24,7 +24,7 @@ namespace Beverage_Buddy.Data.Models
         [Display(Name="Type of Drink")]
         public DrinkType DrinkType { get; set; }
 
-        public IEnumerable<RecipeIngredient> Ingredients { get; set; }
+        public IEnumerable<Ingredient> Ingredients { get; set; }
 
         public RecipeUser User { get; set; }
         [MaxLength(int.MaxValue)]

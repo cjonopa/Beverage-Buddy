@@ -23,20 +23,19 @@ namespace Beverage_Buddy.Web.Services
 
         public async Task SendEmailAsync(MailRequest mailRequest)
         {
-            var email = new MimeMessage();
-            email.Sender = MailboxAddress.Parse(mailSettings.Mail);
+            var email = new MimeMessage {Sender = MailboxAddress.Parse(mailSettings.Mail)};
             email.To.Add(MailboxAddress.Parse(mailRequest.To));
             email.Subject = mailRequest.Subject;
 
             var builder = new BodyBuilder();
             if (mailRequest.Attachments != null)
             {
-                byte[] fileBytes;
                 foreach (var file in mailRequest.Attachments)
                 {
-                    using(var ms = new MemoryStream())
+                    byte[] fileBytes;
+                    await using(var ms = new MemoryStream())
                     {
-                        file.CopyTo(ms);
+                        await file.CopyToAsync(ms);
                         fileBytes = ms.ToArray();
                     }
                     builder.Attachments.Add(file.FileName, fileBytes, ContentType.Parse(file.ContentType));
@@ -48,12 +47,12 @@ namespace Beverage_Buddy.Web.Services
 
             var smtp = new SmtpClient();
             
-            smtp.Connect(mailSettings.Host, mailSettings.Port, MailKit.Security.SecureSocketOptions.StartTls);
-            smtp.Authenticate(mailSettings.Mail, mailSettings.Password);
+            await smtp.ConnectAsync(mailSettings.Host, mailSettings.Port, MailKit.Security.SecureSocketOptions.StartTls);
+            await smtp.AuthenticateAsync(mailSettings.Mail, mailSettings.Password);
 
             await smtp.SendAsync(email);
 
-            smtp.Disconnect(true);
+            await smtp.DisconnectAsync(true);
  
         }
 

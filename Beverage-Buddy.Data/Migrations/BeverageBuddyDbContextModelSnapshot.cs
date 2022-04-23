@@ -22,7 +22,6 @@ namespace Beverage_Buddy.Data.Migrations
             modelBuilder.Entity("Beverage_Buddy.Data.Models.Drink", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("Alcoholic")
@@ -55,6 +54,7 @@ namespace Beverage_Buddy.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageSource")
+                        .HasMaxLength(2147483647)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Instructions")
@@ -105,12 +105,20 @@ namespace Beverage_Buddy.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Amount")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
 
                     b.ToTable("Ingredients");
                 });
@@ -128,10 +136,18 @@ namespace Beverage_Buddy.Data.Migrations
                     b.Property<int>("DrinkType")
                         .HasColumnType("int");
 
+                    b.Property<string>("Instructions")
+                        .HasMaxLength(2147483647)
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("RecipeThumb")
+                        .HasMaxLength(2147483647)
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -141,33 +157,6 @@ namespace Beverage_Buddy.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Recipes");
-                });
-
-            modelBuilder.Entity("Beverage_Buddy.Data.Models.RecipeIngredient", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Amount")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("IngredientId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IngredientId");
-
-                    b.HasIndex("RecipeId");
-
-                    b.ToTable("RecipeIngredients");
                 });
 
             modelBuilder.Entity("Beverage_Buddy.Data.Models.RecipeUser", b =>
@@ -381,6 +370,15 @@ namespace Beverage_Buddy.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Beverage_Buddy.Data.Models.Ingredient", b =>
+                {
+                    b.HasOne("Beverage_Buddy.Data.Models.Recipe", null)
+                        .WithMany("Ingredients")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Beverage_Buddy.Data.Models.Recipe", b =>
                 {
                     b.HasOne("Beverage_Buddy.Data.Models.RecipeUser", "User")
@@ -388,21 +386,6 @@ namespace Beverage_Buddy.Data.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Beverage_Buddy.Data.Models.RecipeIngredient", b =>
-                {
-                    b.HasOne("Beverage_Buddy.Data.Models.Ingredient", null)
-                        .WithMany("Recipes")
-                        .HasForeignKey("IngredientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Beverage_Buddy.Data.Models.Recipe", null)
-                        .WithMany("Ingredients")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -459,11 +442,6 @@ namespace Beverage_Buddy.Data.Migrations
             modelBuilder.Entity("Beverage_Buddy.Data.Models.Drink", b =>
                 {
                     b.Navigation("DrinkIngredients");
-                });
-
-            modelBuilder.Entity("Beverage_Buddy.Data.Models.Ingredient", b =>
-                {
-                    b.Navigation("Recipes");
                 });
 
             modelBuilder.Entity("Beverage_Buddy.Data.Models.Recipe", b =>

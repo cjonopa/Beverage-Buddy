@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Beverage_Buddy.Data.Migrations
 {
     [DbContext(typeof(BeverageBuddyDbContext))]
-    [Migration("20220423143853_RecipeUpdate")]
-    partial class RecipeUpdate
+    [Migration("20220423150717_DatabaseSetup")]
+    partial class DatabaseSetup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -107,12 +107,20 @@ namespace Beverage_Buddy.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Amount")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
 
                     b.ToTable("Ingredients");
                 });
@@ -151,33 +159,6 @@ namespace Beverage_Buddy.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Recipes");
-                });
-
-            modelBuilder.Entity("Beverage_Buddy.Data.Models.RecipeIngredient", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Amount")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("IngredientId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IngredientId");
-
-                    b.HasIndex("RecipeId");
-
-                    b.ToTable("RecipeIngredients");
                 });
 
             modelBuilder.Entity("Beverage_Buddy.Data.Models.RecipeUser", b =>
@@ -391,6 +372,15 @@ namespace Beverage_Buddy.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Beverage_Buddy.Data.Models.Ingredient", b =>
+                {
+                    b.HasOne("Beverage_Buddy.Data.Models.Recipe", null)
+                        .WithMany("Ingredients")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Beverage_Buddy.Data.Models.Recipe", b =>
                 {
                     b.HasOne("Beverage_Buddy.Data.Models.RecipeUser", "User")
@@ -398,21 +388,6 @@ namespace Beverage_Buddy.Data.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Beverage_Buddy.Data.Models.RecipeIngredient", b =>
-                {
-                    b.HasOne("Beverage_Buddy.Data.Models.Ingredient", null)
-                        .WithMany("Recipes")
-                        .HasForeignKey("IngredientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Beverage_Buddy.Data.Models.Recipe", null)
-                        .WithMany("Ingredients")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -469,11 +444,6 @@ namespace Beverage_Buddy.Data.Migrations
             modelBuilder.Entity("Beverage_Buddy.Data.Models.Drink", b =>
                 {
                     b.Navigation("DrinkIngredients");
-                });
-
-            modelBuilder.Entity("Beverage_Buddy.Data.Models.Ingredient", b =>
-                {
-                    b.Navigation("Recipes");
                 });
 
             modelBuilder.Entity("Beverage_Buddy.Data.Models.Recipe", b =>

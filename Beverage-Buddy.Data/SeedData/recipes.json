@@ -1,17 +1,23 @@
 [
 	{
 		"Name": "Orange Juice",
+		"Instructions": "Pour into a tall glass.",
 		"Alcoholic": false,
-		"DrinkType": 4
-	},
+		"DrinkType": 4,
+		"RecipeThumb": "\\lib\\images\\OrangeJuice.jpg"
+  },
 	{
 		"Name": "Screw Driver",
+		"Instructions": "Add ice to glass. Pour in 1 oz of Vodka. Pour in 15oz of Orange Concentrate.",
 		"Alcoholic": true,
-		"DrinkType": 9
+		"DrinkType": 9,
+    "RecipeThumb": "\\lib\\images\\Screwdriver.jpg"
 	},
 	{
 		"Name": "Fuzzy Navel",
+		"Instructions": "Add ice to glass. Pour in 1 oz of PEach Schnapps. Pour in 15oz of Orange Concentrate..",
 		"Alcoholic": true,
-		"DrinkType": 9
+		"DrinkType": 9,
+		"RecipeThumb": "\\lib\\images\\FuzzyNavel.jpg"
 	}
 ]
