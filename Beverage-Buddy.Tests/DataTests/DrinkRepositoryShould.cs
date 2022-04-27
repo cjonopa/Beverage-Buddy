@@ -36,7 +36,6 @@ namespace Beverage_Buddy.Tests.DataTests
         public async void Return_A_Collection_of_Drinks()
         {
             //-- Arrange
-
             mockDrinkRepo.Setup(mdr => mdr.GetAllAsync())
                 .Returns(Task.FromResult(drinks));
             var repo = mockDrinkRepo.Object;
