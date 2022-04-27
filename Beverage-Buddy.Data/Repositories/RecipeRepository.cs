@@ -88,7 +88,7 @@ namespace Beverage_Buddy.Data.Repositories
         {
             try
             {
-                logger.LogInformation("Recipe : GetAll was called.");
+                logger.LogInformation("Recipe : GetAllAsync was called.");
 
                 var recipe = 
                     await db.Recipes
