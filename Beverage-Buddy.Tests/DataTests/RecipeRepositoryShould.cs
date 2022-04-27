@@ -30,7 +30,6 @@ namespace Beverage_Buddy.Tests.DataTests
             };
 
             expected = 2;
-           
         }
 
         [Fact]
