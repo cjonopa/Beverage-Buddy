@@ -12,25 +12,33 @@ namespace Beverage_Buddy.Tests.DataTests
     {
         private readonly Mock<IRepository<Drink, string>> mockDrinkRepo;
 
+        private ICollection<Drink> drinks;
+        private int expected;
+
         public DrinkRepositoryShould()
         {
             mockDrinkRepo = new Mock<IRepository<Drink, string>>();
+            SetupDrinkList();
+        }
+
+        private void SetupDrinkList()
+        {
+            drinks = new List<Drink>
+            {
+                new Drink {Id = "1", DrinkName = "Drink 1"},
+                new Drink {Id = "2", DrinkName = "Drink 2"}
+            };
+
+            expected = 2;
+
+            mockDrinkRepo.Setup(mdr => mdr.GetAllAsync())
+                .Returns(Task.FromResult(drinks));
         }
 
         [Fact]
         public async void Return_A_Collection_of_Drinks()
         {
             //-- Arrange
-            ICollection<Drink> drinks = new List<Drink>
-            {
-                new Drink {Id = "1", DrinkName = "Drink 1"},
-                new Drink {Id = "2", DrinkName = "Drink 2"}
-            };
-            var expected = 2;
-
-            mockDrinkRepo.Setup(mdr => mdr.GetAllAsync())
-                .Returns(Task.FromResult(drinks));
-
             var repo = mockDrinkRepo.Object;
 
             //-- Act
