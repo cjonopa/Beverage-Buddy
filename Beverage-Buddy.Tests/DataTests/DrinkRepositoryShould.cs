@@ -17,13 +17,16 @@ namespace Beverage_Buddy.Tests.DataTests
         }
 
         [Fact]
-        public void Returns_A_Collection_of_Drinks()
+        public async void Returns_A_Collection_of_Drinks()
         {
             //-- Arrange
+            var repo = mockDrinkRepo.Object;
 
             //-- Act
+            var result = await repo.GetAllAsync();
 
             //-- Assert
+            Assert.IsAssignableFrom<ICollection<Drink>>(result);
         }
     }
 }
