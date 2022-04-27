@@ -69,11 +69,11 @@ namespace Beverage_Buddy.Data.Repositories
             }
         }
 
-        public async Task<ICollection<Recipe>> GetAll()
+        public async Task<ICollection<Recipe>> GetAllAsync()
         {
             try
             {
-                logger.LogInformation("Recipe : GetAll was called.");
+                logger.LogInformation("Recipe : GetAllAsync was called.");
 
                 var recipe = 
                     await db.Recipes

@@ -20,11 +20,11 @@ namespace Beverage_Buddy.Data.Repositories
             this.logger = logger;
         }
 
-        public async Task<ICollection<Drink>> GetAll()
+        public async Task<ICollection<Drink>> GetAllAsync()
         {
             try
             {
-                logger.LogInformation("Drink : GetAll was called.");
+                logger.LogInformation("Drink : GetAllAsync was called.");
 
                 var drinks = await db
                     .Drinks

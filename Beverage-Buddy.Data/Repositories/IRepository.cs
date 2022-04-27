@@ -9,7 +9,7 @@ namespace Beverage_Buddy.Data.Repositories
     /// <typeparam name="TK">The type of the key to be used for the repository</typeparam>
     public interface IRepository<T, in TK>
     {
-        Task<ICollection<T>> GetAll();
+        Task<ICollection<T>> GetAllAsync();
         T Get(TK id);
         void Add(T item);
         void Update(T item);
