@@ -24,7 +24,7 @@ namespace Beverage_Buddy.Data.Repositories
         {
             try
             {
-                logger.LogInformation("Drink : GetAll was called.");
+                logger.LogInformation("Drink : GetAllAsync was called.");
 
                 var drinks = await db
                     .Drinks
