@@ -39,11 +39,7 @@ namespace Beverage_Buddy.Data.Repositories
             catch (DbUpdateException ex)
             {
                 logger.LogError($"Failed to add item: {ex}");
-<<<<<<< HEAD
                 throw new DbUpdateException("Unable to add item due to missing requirements.", ex);
-=======
-                throw new DataException("Unable to add item due to missing requirements.", ex);
->>>>>>> 62d6b3e (Created test for Add method in RecipeRepository)
             }
         }
 
