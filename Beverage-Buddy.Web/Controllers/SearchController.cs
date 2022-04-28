@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Beverage_Buddy.Data.Models;
-using Beverage_Buddy.Data.Repositories;
-using Beverage_Buddy.Web.Services;
 using Beverage_Buddy.Web.ViewModels;
 
 namespace Beverage_Buddy.Web.Controllers
@@ -14,18 +13,9 @@ namespace Beverage_Buddy.Web.Controllers
     /// </summary>
     public class SearchController : Controller
     {
-        private readonly IRepository<Drink, string> drinkRepo;
-        private readonly IRepository<Recipe, int> recipeRepo;
-
-        public SearchController(IRepository<Drink, string> drinkRepo, IRepository<Recipe, int> recipeRepo)
-        {
-            this.drinkRepo = drinkRepo;
-            this.recipeRepo = recipeRepo;
-        }
+        public static string BaseUrl { get; } = "http://localhost:5000/";
 
         /// <summary>Index is used to display a list of recipes.</summary>
-        /// <param name="cont">is a string containing a reference to the next
-        /// page of the results to be loaded.</param>
         /// <param name="searchName"></param>
         /// <param name="searchIngredient"></param>
         /// <param name="page"></param>
@@ -36,61 +26,78 @@ namespace Beverage_Buddy.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string searchName, string searchIngredient, int page)
         {
+
+            var model = new DrinkListViewModel();
+
             ViewData["CurrentNameFilter"] = searchName;
             ViewData["CurrentIngredientFilter"] = searchIngredient;
 
-            var drinks = await drinkRepo.GetAll();
-            
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(BaseUrl);
+
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var response = await client.GetAsync("api/drinks");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var webResponse = response.Content.ReadAsStringAsync().Result;
+                    model.ConvertJsonResponse(webResponse);
+                }
+            }
+
             if (!string.IsNullOrEmpty(searchName))
             {
-                drinks = drinks.Where(s => s.DrinkName.ToLower().Contains(searchName.ToLower())).ToList();
+                model.Drinks = model.Drinks.Where(s => s.DrinkName.ToLower().Contains(searchName.ToLower())).ToList();
             }
 
             if (!string.IsNullOrEmpty(searchIngredient))
             {
-                drinks = drinks.Where(
+                model.Drinks = model.Drinks.Where(
                     s => s.DrinkIngredients.Any(
                         di => di.Name.ToLower().Contains(searchIngredient.ToLower()))
                     ).ToList();
             }
 
             var pageResults = 20;
-            var pageCount = Math.Ceiling(drinks.Count() / (double)pageResults);
+            var pageCount = Math.Ceiling(model.Drinks.Count / (double)pageResults);
 
-            drinks = drinks
+            model.Drinks = model.Drinks
                 .Skip((page - 1) * pageResults)
                 .Take(pageResults).ToList();
-            
-            var model = new DrinkListViewModel(drinks)
+
+            model.CurrentPage = page;
+            model.Pages = (int) pageCount;
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Details of the specified drink.
+        /// </summary>
+        /// <param name="id">The id of the drink.</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> Details(string id)
+        {
+            var model = new DrinkDetailsViewModel();
+
+            using (var client = new HttpClient())
             {
-                CurrentPage = page, 
-                Pages = (int) pageCount
-            };
+                client.BaseAddress = new Uri(BaseUrl);
 
-            return View(model);
-        }
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-        [HttpGet]
-        public IActionResult Details(string id)
-        {
-            var model = drinkRepo.Get(id);
+                var response = await client.GetAsync($"api/drinks/{id}");
 
-            return View(model);
-        }
+                if (!response.IsSuccessStatusCode) return View(model);
 
-        [HttpGet]
-        public IActionResult Favorite(string id)
-        {
-            var drink = drinkRepo.Get(id);
-            var model = new FavoriteViewModel(drink, new Recipe());
-
-            return View(model);
-        }
-
-        [HttpPost]
-        public IActionResult Favorite(Recipe recipe)
-        {
-            var model = new FavoriteViewModel(null, recipe);
+                var webResponse = response.Content.ReadAsStringAsync().Result;
+                model.ConvertJsonResponse(webResponse);
+            }
 
             return View(model);
         }

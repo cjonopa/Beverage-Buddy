@@ -21,6 +21,11 @@ namespace Beverage_Buddy.Data.Repositories
             this.logger = logger;
         }
 
+        /// <summary>
+        /// Adds the specified recipe to the database.
+        /// </summary>
+        /// <param name="item">A <see cref="Recipe"/> to be added.</param>
+        /// <exception cref="DbUpdateException">Unable to add item due to missing requirements.</exception>
         public void Add(Recipe item)
         {
             try
@@ -30,9 +35,10 @@ namespace Beverage_Buddy.Data.Repositories
                 db.Recipes.Add(item);
                 db.SaveChanges();
             }
-            catch (Exception ex)
+            catch (DbUpdateException ex)
             {
                 logger.LogError($"Failed to add item: {ex}");
+                throw new DbUpdateException("Unable to add item due to missing requirements.", ex);
             }
         }
 
@@ -69,7 +75,7 @@ namespace Beverage_Buddy.Data.Repositories
             }
         }
 
-        public async Task<ICollection<Recipe>> GetAll()
+        public async Task<ICollection<Recipe>> GetAllAsync()
         {
             try
             {

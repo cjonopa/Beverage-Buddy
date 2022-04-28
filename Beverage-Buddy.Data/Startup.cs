@@ -11,6 +11,7 @@ using Beverage_Buddy.Data.Models;
 using Beverage_Buddy.Data.Repositories;
 using Beverage_Buddy.Data.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Beverage_Buddy.Data
 {
@@ -44,6 +45,20 @@ namespace Beverage_Buddy.Data
             services.AddScoped<CocktailDbApiCaller, CocktailDbApiCaller>();
             services.Configure<ApiSettings>(configuration.GetSection("APISettings"));
 
+            services.AddApiVersioning(opt =>
+            {
+                opt.AssumeDefaultVersionWhenUnspecified = true;
+                opt.DefaultApiVersion = new ApiVersion(1, 1);
+                opt.ReportApiVersions = true;
+            });
+
+            services.AddMvc(opt => opt
+                    .EnableEndpointRouting = false)
+                .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                );
+
+
             services.AddScoped<IRepository<Recipe, int>, RecipeRepository>();
             services.AddScoped<IRepository<Drink, string>, DrinkRepository>();
         }
@@ -57,6 +72,14 @@ namespace Beverage_Buddy.Data
             }
 
             app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action}/{id?}");
+                endpoints.MapRazorPages();
+            });
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Beverage_Buddy.Data.Repositories
             this.logger = logger;
         }
 
-        public async Task<ICollection<Drink>> GetAll()
+        public async Task<ICollection<Drink>> GetAllAsync()
         {
             try
             {

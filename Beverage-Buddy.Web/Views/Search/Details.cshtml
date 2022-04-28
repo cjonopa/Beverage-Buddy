@@ -1,4 +1,4 @@
-﻿@model Drink
+﻿@model DrinkDetailsViewModel
 
 @{
     ViewBag.Title = "Recipe Details";
@@ -6,11 +6,11 @@
 }
 
 <div class="card mx-auto" style="width: 35em;">
-    <img src="@Model.DrinkThumb" class="card-img-top" alt="@Model.DrinkName" />
+    <img src="@Model.Drink.DrinkThumb" class="card-img-top" alt="@Model.Drink.DrinkName" />
     <div class="card-body">
         <h5 class="card-title text-primary">
-            @Html.DisplayFor(model => model.DrinkName)
-            @if (@Model.Alcoholic) {
+            @Html.DisplayFor(model => model.Drink.DrinkName)
+            @if (@Model.Drink.Alcoholic) {
             <span class="badge bg-secondary">
                 <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" fill="currentColor" class="bi bi-emoji-dizzy" viewBox="0 0 16 16">
                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
@@ -23,18 +23,18 @@
     </div>
     <div class="card-body">
         <h5 class="card-title text-center text-secondary">
-            @Html.DisplayNameFor(model => model.Instructions)
+            @Html.DisplayNameFor(model => model.Drink.Instructions)
         </h5>
         <p class="card-text">
-            @Html.DisplayFor(model => model.Instructions)
+            @Html.DisplayFor(model => model.Drink.Instructions)
         </p>
     </div>
     <div class="card-body">
         <h5 class="card-title text-center text-primary">
-            @Html.DisplayNameFor(model => model.DrinkIngredients)
+            @Html.DisplayNameFor(model => model.Drink.DrinkIngredients)
         </h5>
         <ul class="=list-group list-group-flush">
-            @foreach (var ingredient in @Model.DrinkIngredients)
+            @foreach (var ingredient in @Model.Drink.DrinkIngredients)
             {
                 <li class="list-group-item">@ingredient.Measure - @ingredient.Name</li>
             }

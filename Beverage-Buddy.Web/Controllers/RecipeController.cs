@@ -24,7 +24,7 @@ namespace Beverage_Buddy.Web.Controllers
         {
             ViewData["CurrentNameFilter"] = searchName;
 
-            var recipes = await db.GetAll();
+            var recipes = await db.GetAllAsync();
 
             if (recipes == null) return View();
 
