@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Beverage_Buddy.Data.Models;
 using Beverage_Buddy.Data.Repositories;
-using Beverage_Buddy.Web.Extensions;
 using Beverage_Buddy.Web.Services;
 using Beverage_Buddy.Web.ViewModels;
 
@@ -15,11 +14,13 @@ namespace Beverage_Buddy.Web.Controllers
     /// </summary>
     public class SearchController : Controller
     {
-        private readonly IRepository<Drink, string> db;
+        private readonly IRepository<Drink, string> drinkRepo;
+        private readonly IRepository<Recipe, int> recipeRepo;
 
-        public SearchController(IRepository<Drink, string> db)
+        public SearchController(IRepository<Drink, string> drinkRepo, IRepository<Recipe, int> recipeRepo)
         {
-            this.db = db;
+            this.drinkRepo = drinkRepo;
+            this.recipeRepo = recipeRepo;
         }
 
         /// <summary>Index is used to display a list of recipes.</summary>
@@ -38,7 +39,7 @@ namespace Beverage_Buddy.Web.Controllers
             ViewData["CurrentNameFilter"] = searchName;
             ViewData["CurrentIngredientFilter"] = searchIngredient;
 
-            var drinks = await db.GetAll();
+            var drinks = await drinkRepo.GetAll();
             
             if (!string.IsNullOrEmpty(searchName))
             {
@@ -72,7 +73,24 @@ namespace Beverage_Buddy.Web.Controllers
         [HttpGet]
         public IActionResult Details(string id)
         {
-            var model = db.Get(id);
+            var model = drinkRepo.Get(id);
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult Favorite(string id)
+        {
+            var drink = drinkRepo.Get(id);
+            var model = new FavoriteViewModel(drink, new Recipe());
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Favorite(Recipe recipe)
+        {
+            var model = new FavoriteViewModel(null, recipe);
 
             return View(model);
         }
