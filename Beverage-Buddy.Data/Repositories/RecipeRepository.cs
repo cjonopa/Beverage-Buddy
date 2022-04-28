@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -33,6 +34,7 @@ namespace Beverage_Buddy.Data.Repositories
             catch (Exception ex)
             {
                 logger.LogError($"Failed to add item: {ex}");
+                throw new DataException("Unable to add item due to missing requirements.", ex);
             }
         }
 
