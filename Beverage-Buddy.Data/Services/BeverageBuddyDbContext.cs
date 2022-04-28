@@ -10,6 +10,10 @@ namespace Beverage_Buddy.Data.Services
     {
         private readonly IConfiguration config;
 
+        public BeverageBuddyDbContext()
+        {
+        }
+
         public BeverageBuddyDbContext(IConfiguration config)
         {
             this.config = config;
