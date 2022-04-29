@@ -15,7 +15,7 @@ namespace Beverage_Buddy.Data.Repositories
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>A <see cref="T"/>.</returns>
-        T Get(TK id);
+        Task<T> GetAsync(TK id);
         /// <summary>
         /// Adds the specified <see cref="T"/>.
         /// </summary>

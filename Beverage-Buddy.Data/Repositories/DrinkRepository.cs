@@ -41,13 +41,17 @@ namespace Beverage_Buddy.Data.Repositories
             }
         }
 
-        public Drink Get(string id)
+        public async Task<Drink> GetAsync(string id)
         {
             try
             {
-                logger.LogInformation("Drink : Get was called.");
+                logger.LogInformation("Drink : GetAsync was called.");
 
-                return db.Drinks.Include(d => d.DrinkIngredients).FirstOrDefault(d => d.Id == id);
+                var drink = db.Drinks
+                    .Include(d => d.DrinkIngredients)
+                    .Where(d => d.Id == id);
+
+                return await drink.FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {

@@ -68,15 +68,17 @@ namespace Beverage_Buddy.Data.Repositories
             return db.Recipes.Any(m => m.Name == name); 
         }
 
-        public Recipe Get(int id)
+        public async Task<Recipe> GetAsync(int id)
         {
             try
             {
-                logger.LogInformation("Recipe : Get was called.");
+                logger.LogInformation("Recipe : GetAsync was called.");
 
-                return db.Recipes                
+                var recipe = db.Recipes
                     .Include(r => r.Ingredients)
-                    .FirstOrDefault(r => r.Id == id);
+                    .Where(r => r.Id == id);
+
+                return await recipe.FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {

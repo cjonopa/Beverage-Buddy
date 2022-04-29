@@ -39,7 +39,7 @@ namespace Beverage_Buddy.Data.Controllers
         {
             try
             {
-                logger.LogInformation("Drink : GetAll was called.");
+                logger.LogInformation("Drink : Get was called.");
                 var results = await drinkRepository.GetAllAsync();
 
                 return Ok(results);
@@ -57,12 +57,12 @@ namespace Beverage_Buddy.Data.Controllers
         /// <param name="drinkId">The drink identifier.</param>
         /// <returns></returns>
         [HttpGet("{drinkId}")]
-        public ActionResult<Drink> Get(string drinkId)
+        public async Task<ActionResult<Drink>> Get(string drinkId)
         {
             try
             {
-                logger.LogInformation("Drink : GetAll was called.");
-                var results = drinkRepository.Get(drinkId);
+                logger.LogInformation("Drink : Get was called.");
+                var results = await drinkRepository.GetAsync(drinkId);
                 if (results == null) return NotFound($"No drink with id, {drinkId}, was found.");
 
                 return Ok(results);

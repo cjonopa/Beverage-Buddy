@@ -67,7 +67,7 @@ namespace Beverage_Buddy.Data.Controllers
             try
             {
                 logger.LogInformation("Recipe : GetAll was called.");
-                var results = recipeRepository.Get(recipeId);
+                var results = recipeRepository.GetAsync(recipeId);
                 if (results == null) return NotFound($"No recipe with id, {recipeId}, was found.");
 
                 return Ok(results);
