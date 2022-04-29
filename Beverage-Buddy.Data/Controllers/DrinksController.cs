@@ -19,12 +19,21 @@ namespace Beverage_Buddy.Data.Controllers
         private readonly IRepository<Drink, string> drinkRepository;
         private readonly ILogger<DrinksController> logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DrinksController"/> class.
+        /// </summary>
+        /// <param name="drinkRepository">The drink repository.</param>
+        /// <param name="logger">The logger.</param>
         public DrinksController(IRepository<Drink, string> drinkRepository, ILogger<DrinksController> logger)
         {
             this.drinkRepository = drinkRepository;
             this.logger = logger;
         }
 
+        /// <summary>
+        /// Gets this instance.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<ICollection<Drink>>> Get()
         {
@@ -42,6 +51,11 @@ namespace Beverage_Buddy.Data.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets the specified drink identifier.
+        /// </summary>
+        /// <param name="drinkId">The drink identifier.</param>
+        /// <returns></returns>
         [HttpGet("{drinkId}")]
         public ActionResult<Drink> Get(string drinkId)
         {

@@ -21,6 +21,12 @@ namespace Beverage_Buddy.Data.Controllers
         private readonly ILogger<RecipesController> logger;
         private readonly LinkGenerator linkGenerator;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RecipesController"/> class.
+        /// </summary>
+        /// <param name="recipeRepository">The recipe repository.</param>
+        /// <param name="logger">The logger.</param>
+        /// <param name="linkGenerator">The link generator.</param>
         public RecipesController(IRepository<Recipe, int> recipeRepository, ILogger<RecipesController> logger, 
             LinkGenerator linkGenerator)
         {
@@ -29,6 +35,10 @@ namespace Beverage_Buddy.Data.Controllers
             this.linkGenerator = linkGenerator;
         }
 
+        /// <summary>
+        /// Gets this instance.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<ICollection<Recipe>>> Get()
         {
@@ -46,6 +56,11 @@ namespace Beverage_Buddy.Data.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets the specified recipe identifier.
+        /// </summary>
+        /// <param name="recipeId">The recipe identifier.</param>
+        /// <returns></returns>
         [HttpGet("{recipeId}")]
         public ActionResult<Recipe> Get(int recipeId)
         {
@@ -64,6 +79,11 @@ namespace Beverage_Buddy.Data.Controllers
             }
         }
 
+        /// <summary>
+        /// Posts the specified model.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult<Recipe>> Post([FromBody]Recipe model)
         {
