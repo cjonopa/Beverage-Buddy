@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -21,6 +22,11 @@ namespace Beverage_Buddy.Data.Repositories
             this.logger = logger;
         }
 
+        /// <summary>
+        /// Adds the specified recipe to the database.
+        /// </summary>
+        /// <param name="item">A <see cref="Recipe"/> to be added.</param>
+        /// <exception cref="DbUpdateException">Unable to add item due to missing requirements.</exception>
         public void Add(Recipe item)
         {
             try
@@ -28,11 +34,11 @@ namespace Beverage_Buddy.Data.Repositories
                 logger.LogInformation("Recipe : Add was called.");
 
                 db.Recipes.Add(item);
-                db.SaveChanges();
             }
-            catch (Exception ex)
+            catch (DbUpdateException ex)
             {
                 logger.LogError($"Failed to add item: {ex}");
+                throw new DbUpdateException("Unable to add item due to missing requirements.", ex);
             }
         }
 
@@ -52,15 +58,27 @@ namespace Beverage_Buddy.Data.Repositories
             }
         }
 
-        public Recipe Get(int id)
+        public async Task<bool> SaveAllAsync()
+        {
+            return await db.SaveChangesAsync() > 0;
+        }
+
+        public bool CheckForExisting(string name)
+        {
+            return db.Recipes.Any(m => m.Name == name); 
+        }
+
+        public async Task<Recipe> GetAsync(int id)
         {
             try
             {
-                logger.LogInformation("Recipe : Get was called.");
+                logger.LogInformation("Recipe : GetAsync was called.");
 
-                return db.Recipes                
+                var recipe = db.Recipes
                     .Include(r => r.Ingredients)
-                    .FirstOrDefault(r => r.Id == id);
+                    .Where(r => r.Id == id);
+
+                return await recipe.FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {

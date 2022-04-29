@@ -8,17 +8,14 @@ using Newtonsoft.Json;
 
 namespace Beverage_Buddy.Web.ViewModels
 {
-    public class RecipeListViewModel
+    public class RecipeDetailsViewModel
     {
-        public ICollection<Recipe> Recipes { get; set; }
-
-        public int Pages { get; set; }
-        public int CurrentPage { get; set; }
+        public Recipe Recipe { get; set; }
+        public bool IsAuthenticated { get; set; }
 
         public void ConvertJsonResponse(string webResponse)
         {
-            Recipes = JsonConvert.DeserializeObject<ICollection<Recipe>>(webResponse);
+            Recipe = JsonConvert.DeserializeObject<Recipe>(webResponse);
         }
-
     }
 }

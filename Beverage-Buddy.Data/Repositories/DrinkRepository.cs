@@ -41,13 +41,17 @@ namespace Beverage_Buddy.Data.Repositories
             }
         }
 
-        public Drink Get(string id)
+        public async Task<Drink> GetAsync(string id)
         {
             try
             {
-                logger.LogInformation("Drink : Get was called.");
+                logger.LogInformation("Drink : GetAsync was called.");
 
-                return db.Drinks.Include(d => d.DrinkIngredients).FirstOrDefault(d => d.Id == id);
+                var drink = db.Drinks
+                    .Include(d => d.DrinkIngredients)
+                    .Where(d => d.Id == id);
+
+                return await drink.FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -63,7 +67,6 @@ namespace Beverage_Buddy.Data.Repositories
                 logger.LogInformation("Recipe : Add was called.");
 
                 db.Drinks.Add(item);
-                db.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -78,7 +81,6 @@ namespace Beverage_Buddy.Data.Repositories
                 logger.LogInformation("Drink : Update was called.");
 
                 var entry = db.Entry(item);
-                db.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -94,12 +96,21 @@ namespace Beverage_Buddy.Data.Repositories
 
                 var drink = db.Drinks.Find(id);
                 db.Drinks.Remove(drink);
-                db.SaveChanges();
             }
             catch (Exception ex)
             {
                 logger.LogError($"Failed to delete item: {ex}");
             }
+        }
+
+        public async Task<bool> SaveAllAsync()
+        {
+            return await db.SaveChangesAsync() > 0;
+        }
+
+        public bool CheckForExisting(string name)
+        {
+            return db.Recipes.Any(m => m.Name == name);
         }
     }
 }
