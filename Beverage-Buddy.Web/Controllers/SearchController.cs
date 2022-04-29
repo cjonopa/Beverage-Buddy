@@ -2,8 +2,10 @@
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Beverage_Buddy.Data.Models;
 using Beverage_Buddy.Web.ViewModels;
 
 namespace Beverage_Buddy.Web.Controllers
@@ -26,7 +28,6 @@ namespace Beverage_Buddy.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string searchName, string searchIngredient, int page)
         {
-
             var model = new DrinkListViewModel();
 
             ViewData["CurrentNameFilter"] = searchName;
@@ -82,7 +83,10 @@ namespace Beverage_Buddy.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(string id)
         {
-            var model = new DrinkDetailsViewModel();
+            var model = new DrinkDetailsViewModel
+            {
+                IsAuthenticated = User.Identity != null && User.Identity.IsAuthenticated
+            };
 
             using (var client = new HttpClient())
             {
@@ -98,6 +102,77 @@ namespace Beverage_Buddy.Web.Controllers
                 var webResponse = response.Content.ReadAsStringAsync().Result;
                 model.ConvertJsonResponse(webResponse);
             }
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Favorite(string id)
+        {
+            var model = new FavoriteViewModel();
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(BaseUrl);
+
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var response = await client.GetAsync($"api/drinks/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var webResponse = response.Content.ReadAsStringAsync().Result;
+                    model.ReadJsonResponseForDrink(webResponse);
+                }
+            }
+            
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Favorite(string id, int drinkType)
+        {
+            var model = new FavoriteViewModel();
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(BaseUrl);
+
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var response = await client.GetAsync($"api/drinks/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var webResponse = response.Content.ReadAsStringAsync().Result;
+                    model.ReadJsonResponseForDrink(webResponse);
+
+                    model.Recipe.DrinkType = (DrinkType) drinkType;
+
+                    if (model.Recipe.DrinkType != DrinkType.None)
+                    {
+                        using var client2 = new HttpClient
+                        {
+                            BaseAddress = new Uri(BaseUrl)
+                        };
+
+                        client2.DefaultRequestHeaders.Clear();
+                        client2.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                        var result = await client2.PostAsJsonAsync("api/recipes", model.Recipe);
+
+                        if (result.IsSuccessStatusCode)
+                        {
+                            if (result.Headers.Location != null)
+                                return Redirect(result.Headers.Location.OriginalString);
+                        }
+                    }
+                }
+            }
+
+            ModelState.AddModelError("", "Failed to Add Favorite.");
 
             return View(model);
         }

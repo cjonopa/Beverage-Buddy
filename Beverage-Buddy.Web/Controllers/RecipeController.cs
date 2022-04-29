@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Beverage_Buddy.Data.Models;
-using Beverage_Buddy.Data.Repositories;
 using Beverage_Buddy.Web.ViewModels;
 
 namespace Beverage_Buddy.Web.Controllers
@@ -12,46 +13,74 @@ namespace Beverage_Buddy.Web.Controllers
     [Authorize]
     public class RecipeController : Controller
     {
-        private readonly IRepository<Recipe, int> db;
-
-        public RecipeController(IRepository<Recipe, int> db)
-        {
-            this.db = db;
-        }
+        public static string BaseUrl { get; } = "http://localhost:5000/";
 
         [HttpGet]
         public async Task<IActionResult> Index(string searchName, int page)
         {
+            var model = new RecipeListViewModel();
+
             ViewData["CurrentNameFilter"] = searchName;
 
-            var recipes = await db.GetAllAsync();
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(BaseUrl);
 
-            if (recipes == null) return View();
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var response = await client.GetAsync("api/recipes");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var webResponse = response.Content.ReadAsStringAsync().Result;
+                    model.ConvertJsonResponse(webResponse);
+                }
+            }
+
+            if (model.Recipes == null) return View();
 
             if (!string.IsNullOrEmpty(searchName))
             {
-                recipes = recipes.Where(s => s.Name.ToLower().Contains(searchName.ToLower())).ToList();
+                model.Recipes = model.Recipes.Where(s => s.Name.ToLower().Contains(searchName.ToLower())).ToList();
             }
 
             var pageResults = 20;
-            var pageCount = Math.Ceiling(recipes.Count() / (double)pageResults);
+            var pageCount = Math.Ceiling(model.Recipes.Count() / (double)pageResults);
 
-            recipes = recipes
+            model.Recipes = model.Recipes
                 .Skip((page - 1) * pageResults)
                 .Take(pageResults).ToList();
 
-            var model = new RecipeListViewModel(recipes);
+            model.CurrentPage = page;
+            model.Pages = (int)pageCount;
+
             return View(model);
         }
 
         [HttpGet]
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            var model = db.Get(id);
-            if (model == null)
+            var model = new RecipeDetailsViewModel
             {
-                return View("NotFound");
+                IsAuthenticated = User.Identity != null && User.Identity.IsAuthenticated
+            };
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(BaseUrl);
+
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var response = await client.GetAsync($"api/recipes/{id}");
+
+                if (!response.IsSuccessStatusCode) return View(model);
+
+                var webResponse = response.Content.ReadAsStringAsync().Result;
+                model.ConvertJsonResponse(webResponse);
             }
+
             return View(model);
         }
 
@@ -67,7 +96,6 @@ namespace Beverage_Buddy.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Add(recipe);
                 return RedirectToAction("Details", new { id = recipe.Id });
             }
 
@@ -75,12 +103,26 @@ namespace Beverage_Buddy.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var model = db.Get(id);
-            if (model == null)
+            var model = new RecipeDetailsViewModel()
             {
-                return View("NotFound");
+                IsAuthenticated = User.Identity != null && User.Identity.IsAuthenticated
+            };
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(BaseUrl);
+
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var response = await client.GetAsync($"api/recipes/{id}");
+
+                if (!response.IsSuccessStatusCode) return View(model);
+
+                var webResponse = response.Content.ReadAsStringAsync().Result;
+                model.ConvertJsonResponse(webResponse);
             }
 
             return View(model);
@@ -92,7 +134,6 @@ namespace Beverage_Buddy.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Update(recipe);
                 return RedirectToAction("Details", new { id = recipe.Id });
             }
 
@@ -102,11 +143,7 @@ namespace Beverage_Buddy.Web.Controllers
         [HttpGet]
         public ActionResult Delete(int id)
         {
-            var model = db.Get(id);
-            if (model == null)
-            {
-                return View("NotFound");
-            }
+            var model = new Recipe();
 
             return View(model);
         }
@@ -115,7 +152,7 @@ namespace Beverage_Buddy.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(Recipe recipe)
         {
-            db.Delete(recipe.Id);
+
             return RedirectToAction("Index");
         }
     }

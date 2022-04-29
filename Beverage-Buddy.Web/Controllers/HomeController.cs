@@ -1,6 +1,7 @@
 ﻿using Beverage_Buddy.Web.Models;
 using Beverage_Buddy.Web.Services;
 using Beverage_Buddy.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Beverage_Buddy.Web.Controllers

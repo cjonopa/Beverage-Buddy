@@ -33,7 +33,6 @@ namespace Beverage_Buddy.Data.Repositories
                 logger.LogInformation("Recipe : Add was called.");
 
                 db.Recipes.Add(item);
-                db.SaveChanges();
             }
             catch (DbUpdateException ex)
             {
@@ -56,6 +55,16 @@ namespace Beverage_Buddy.Data.Repositories
             {
                 logger.LogError($"Failed to delete item: {ex}");
             }
+        }
+
+        public async Task<bool> SaveAllAsync()
+        {
+            return await db.SaveChangesAsync() > 0;
+        }
+
+        public bool CheckForExisting(string name)
+        {
+            return db.Recipes.Any(m => m.Name == name); 
         }
 
         public Recipe Get(int id)

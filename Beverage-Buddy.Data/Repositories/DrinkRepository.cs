@@ -63,7 +63,6 @@ namespace Beverage_Buddy.Data.Repositories
                 logger.LogInformation("Recipe : Add was called.");
 
                 db.Drinks.Add(item);
-                db.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -78,7 +77,6 @@ namespace Beverage_Buddy.Data.Repositories
                 logger.LogInformation("Drink : Update was called.");
 
                 var entry = db.Entry(item);
-                db.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -94,12 +92,21 @@ namespace Beverage_Buddy.Data.Repositories
 
                 var drink = db.Drinks.Find(id);
                 db.Drinks.Remove(drink);
-                db.SaveChanges();
             }
             catch (Exception ex)
             {
                 logger.LogError($"Failed to delete item: {ex}");
             }
+        }
+
+        public async Task<bool> SaveAllAsync()
+        {
+            return await db.SaveChangesAsync() > 0;
+        }
+
+        public bool CheckForExisting(string name)
+        {
+            return db.Recipes.Any(m => m.Name == name);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Beverage_Buddy.Data.Models
 {
@@ -17,5 +18,7 @@ namespace Beverage_Buddy.Data.Models
         public string Amount { get; set; }
 
         public int RecipeId { get; set; }
+
+        public string Item => $"{Amount} - {Name}";
     }
 }

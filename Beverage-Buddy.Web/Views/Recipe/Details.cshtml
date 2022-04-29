@@ -1,11 +1,11 @@
-﻿@model Recipe
+﻿@model RecipeDetailsViewModel
 
 <div class="card mx-auto" style="width: 18rem;">
-    <img src="@Model.RecipeThumb" class="card-img-top" alt="@Model.Name">
+    <img src="@Model.Recipe.RecipeThumb" class="card-img-top" alt="@Model.Recipe.Name">
     <div class="card-body">
         <h5 class="card-title">
-            @Html.DisplayFor(model => model.Name)
-            @if (@Model.Alcoholic)
+            @Html.DisplayFor(model => model.Recipe.Name)
+            @if (@Model.Recipe.Alcoholic)
             {
                 <span class="badge bg-secondary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" fill="currentColor" class="bi bi-emoji-dizzy" viewBox="0 0 16 16">
@@ -18,25 +18,25 @@
     </div>
     <div class="card-body">
         <h5 class="card-title text-center text-secondary">
-            @Html.DisplayNameFor(model => model.Instructions)
+            @Html.DisplayNameFor(model => model.Recipe.Instructions)
         </h5>
         <p class="card-text">
-            @Html.DisplayFor(model => model.Instructions)
+            @Html.DisplayFor(model => model.Recipe.Instructions)
         </p>
     </div>
     <div class="card-body">
         <h5 class="card-title text-center text-primary">
-            @Html.DisplayNameFor(model => model.Ingredients)
+            @Html.DisplayNameFor(model => model.Recipe.Ingredients)
         </h5>
         <ul class="=list-group list-group-flush">
-            @foreach (var ingredient in @Model.Ingredients)
+            @foreach (var ingredient in @Model.Recipe.Ingredients)
             {
                 <li class="list-group-item">@ingredient.Amount - @ingredient.Name</li>
             }
         </ul>
     </div>
     <div class="card-body">
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-dark">Edit</a>
+        <a asp-action="Edit" asp-route-id="@Model.Recipe.Id" class="btn btn-outline-dark">Edit</a>
         <a asp-action="Index" class="btn btn-outline-dark">Back to List</a>
     </div>
 </div>

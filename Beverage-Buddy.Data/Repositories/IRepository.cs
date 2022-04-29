@@ -31,5 +31,7 @@ namespace Beverage_Buddy.Data.Repositories
         /// </summary>
         /// <param name="id">The identifier.</param>
         void Delete(TK id);
+        Task<bool> SaveAllAsync();
+        bool CheckForExisting(string name);
     }
 }

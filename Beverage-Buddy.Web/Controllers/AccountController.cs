@@ -100,10 +100,8 @@ namespace Beverage_Buddy.Web.Controllers
                     {
                         return Redirect(Request.Query["ReturnUrl"].First());
                     }
-                    else
-                    {
-                        RedirectToAction("Index", "Home");
-                    }
+
+                    return RedirectToAction("Index", "Home");
                 }
             }
 

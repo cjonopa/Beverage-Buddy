@@ -43,7 +43,7 @@ namespace Beverage_Buddy.Data.Controllers
         }
 
         [HttpGet("{drinkId}")]
-        public ActionResult<ICollection<Drink>> Get(string drinkId)
+        public ActionResult<Drink> Get(string drinkId)
         {
             try
             {
