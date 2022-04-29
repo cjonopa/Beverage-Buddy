@@ -20,17 +20,17 @@ namespace Beverage_Buddy.Data.Repositories
         /// Adds the specified <see cref="T"/>.
         /// </summary>
         /// <param name="item">A <see cref="T"/>.</param>
-        void Add(T item);
+        T Add(T item);
         /// <summary>
         /// Updates the specified <see cref="T"/>.
         /// </summary>
         /// <param name="item">A <see cref="T"/>.</param>
-        void Update(T item);
+        T Update(T item);
         /// <summary>
         /// Deletes the specified identifier of the <see cref="T"/>.
         /// </summary>
         /// <param name="id">The identifier.</param>
-        void Delete(TK id);
+        T Delete(TK id);
         Task<bool> SaveAllAsync();
         bool CheckForExisting(string name);
     }
