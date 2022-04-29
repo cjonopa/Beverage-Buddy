@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Data;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Beverage_Buddy.Data.Models;
@@ -22,50 +20,25 @@ namespace Beverage_Buddy.Data.Repositories
             this.logger = logger;
         }
 
-        /// <summary>
-        /// Adds the specified recipe to the database.
-        /// </summary>
-        /// <param name="item">A <see cref="Recipe"/> to be added.</param>
-        /// <exception cref="DbUpdateException">Unable to add item due to missing requirements.</exception>
-        public void Add(Recipe item)
+        public async Task<ICollection<Recipe>> GetAllAsync()
         {
             try
             {
-                logger.LogInformation("Recipe : Add was called.");
+                logger.LogInformation("Recipe : GetAllAsync was called.");
 
-                db.Recipes.Add(item);
-            }
-            catch (DbUpdateException ex)
-            {
-                logger.LogError($"Failed to add item: {ex}");
-                throw new DbUpdateException("Unable to add item due to missing requirements.", ex);
-            }
-        }
+                var recipe =
+                    await db.Recipes
+                        .OrderBy(r => r.Name)
+                        .Include(r => r.Ingredients)
+                        .ToListAsync();
 
-        public void Delete(int id)
-        {
-            try
-            {
-                logger.LogInformation("Recipe : Delete was called.");
-
-                var recipe = db.Recipes.Find(id);
-                db.Recipes.Remove(recipe);
-                db.SaveChanges();
+                return recipe;
             }
             catch (Exception ex)
             {
-                logger.LogError($"Failed to delete item: {ex}");
+                logger.LogError($"Failed to get all recipes: {ex}");
+                throw new Exception("Error retrieving data from repository", ex);
             }
-        }
-
-        public async Task<bool> SaveAllAsync()
-        {
-            return await db.SaveChangesAsync() > 0;
-        }
-
-        public bool CheckForExisting(string name)
-        {
-            return db.Recipes.Any(m => m.Name == name); 
         }
 
         public async Task<Recipe> GetAsync(int id)
@@ -83,44 +56,86 @@ namespace Beverage_Buddy.Data.Repositories
             catch (Exception ex)
             {
                 logger.LogError($"Failed to get item: {ex}");
-                return null;
+                throw new Exception("Error retrieving data from repository", ex);
             }
         }
 
-        public async Task<ICollection<Recipe>> GetAllAsync()
+        /// <summary>
+        /// Adds the specified recipe to the database.
+        /// </summary>
+        /// <param name="item">A <see cref="Recipe"/> to be added.</param>
+        /// <exception cref="DbUpdateException">Unable to add item due to missing requirements.</exception>
+        public Recipe Add(Recipe item)
         {
             try
             {
-                logger.LogInformation("Recipe : GetAllAsync was called.");
+                logger.LogInformation("Recipe : Add was called.");
 
-                var recipe = 
-                    await db.Recipes
-                        .OrderBy(r => r.Name)                    
-                        .Include(r => r.Ingredients)                        
-                        .ToListAsync();
+                db.Recipes.Add(item);
+
+                return item;
+            }
+            catch (DbUpdateException ex)
+            {
+                logger.LogError($"Failed to add item: {ex}");
+                throw new Exception("Error adding data to repository", ex);
+            }
+        }
+
+        public Recipe Update(Recipe item)
+        {
+            try
+            {
+                logger.LogInformation("Recipe : Update was called.");
+                var entity = db.Recipes.Attach(item);
+                entity.State = EntityState.Modified;
+
+                return item;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to update item: {ex}");
+                throw new Exception("Error updating data to repository", ex);
+            }
+        }
+
+        public Recipe Delete(int id)
+        {
+            try
+            {
+                logger.LogInformation("Recipe : Delete was called.");
+
+                var recipe = db.Recipes.Find(id);
+                if (recipe != null)
+                {
+                    db.Recipes.Remove(recipe);
+                }
 
                 return recipe;
             }
             catch (Exception ex)
             {
-                logger.LogError($"Failed to get all recipes: {ex}");
-                return null;
+                logger.LogError($"Failed to delete item: {ex}");
+                throw new Exception("Error deleting data from repository", ex);
             }
         }
 
-        public void Update(Recipe item)
+        public async Task<bool> SaveAllAsync()
         {
             try
             {
-                logger.LogInformation("Recipe : Update was called.");
-
-                var entry = db.Entry(item);
-                db.SaveChanges();
+                return await db.SaveChangesAsync() > 0;
             }
             catch (Exception ex)
             {
-                logger.LogError($"Failed to update item: {ex}");
+                logger.LogError($"Failed to save changes to the repository: {ex}");
+                throw new DbUpdateException("Error saving changes to repository.", ex);
             }
+        }
+
+        public bool CheckForExisting(string name)
+        {
+            return db.Recipes.Any(m => m.Name == name);
         }
     }
 }
