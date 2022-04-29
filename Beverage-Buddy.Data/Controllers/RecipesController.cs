@@ -77,7 +77,7 @@ namespace Beverage_Buddy.Data.Controllers
                 recipeRepository.Add(model);
                 if (await recipeRepository.SaveAllAsync())
                 {
-                    var location = linkGenerator.GetPathByAction("Details", "Recipe", new { recipeId = model.Id });
+                    var location = linkGenerator.GetPathByAction("Details", "Recipe", new { id = model.Id });
                     return Created(location, model);
                 }
             }
