@@ -1,18 +1,20 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Beverage_Buddy.Data.Models;
+using EntityFramework.Exceptions.SqlServer;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Beverage_Buddy.Data.Services
 {
     public class BeverageBuddyDbContext : IdentityDbContext<RecipeUser, IdentityRole, string>
     {
         private readonly IConfiguration config;
-
-        public BeverageBuddyDbContext()
-        {
-        }
 
         public BeverageBuddyDbContext(IConfiguration config)
         {
@@ -28,7 +30,14 @@ namespace Beverage_Buddy.Data.Services
         {
             base.OnConfiguring(optionsBuilder);
 
-            optionsBuilder.UseSqlServer(config["ConnectionStrings:BeverageBuddyContextDb"]);
+            optionsBuilder
+                .UseSqlServer(config["ConnectionStrings:BeverageBuddyContextDb"])
+                .UseExceptionProcessor()
+                .LogTo(
+                    Console.WriteLine, 
+                    new [] { DbLoggerCategory.Database.Command.Name },
+                    LogLevel.Information
+                );
         }
     }
 }

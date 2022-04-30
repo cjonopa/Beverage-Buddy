@@ -24,7 +24,7 @@ namespace Beverage_Buddy.Data.Repositories
         {
             try
             {
-                logger.LogInformation("Drink : GetAll was called.");
+                logger.LogInformation("Drink : GetAllAsync was called.");
 
                 var drinks = await db
                     .Drinks
@@ -37,71 +37,93 @@ namespace Beverage_Buddy.Data.Repositories
             catch (Exception ex)
             {
                 logger.LogError($"Failed to get all drinks: {ex}");
-                return null;
+                throw new Exception("Error retrieving data from repository", ex);
             }
         }
 
-        public Drink Get(string id)
+        public async Task<Drink> GetAsync(string id)
         {
             try
             {
-                logger.LogInformation("Drink : Get was called.");
+                logger.LogInformation("Drink : GetAsync was called.");
 
-                return db.Drinks.Include(d => d.DrinkIngredients).FirstOrDefault(d => d.Id == id);
+                var drink = db.Drinks
+                    .Include(d => d.DrinkIngredients)
+                    .Where(d => d.Id == id);
+
+                return await drink.FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
                 logger.LogError($"Failed to get drink: {ex}");
-                return null;
+                throw new Exception("Error retrieving data from repository", ex);
             }
         }
 
-        public void Add(Drink item)
+        public Drink Add(Drink item)
         {
             try
             {
                 logger.LogInformation("Recipe : Add was called.");
-
                 db.Drinks.Add(item);
+                return item;
             }
             catch (Exception ex)
             {
                 logger.LogError($"Failed to add drink: {ex}");
+                throw new Exception("Error adding data to repository", ex);
             }
         }
 
-        public void Update(Drink item)
+        public Drink Update(Drink item)
         {
             try
             {
                 logger.LogInformation("Drink : Update was called.");
-
-                var entry = db.Entry(item);
+                var entity = db.Drinks.Attach(item);
+                entity.State = EntityState.Modified;
+                return item;
             }
             catch (Exception ex)
             {
                 logger.LogError($"Failed to update drink: {ex}");
+                throw new Exception("Error updating data to repository", ex);
             }
         }
 
-        public void Delete(string id)
+        public Drink Delete(string id)
         {
             try
             {
                 logger.LogInformation("Drink : Delete was called.");
 
                 var drink = db.Drinks.Find(id);
-                db.Drinks.Remove(drink);
+                if (drink != null)
+                {
+                    db.Drinks.Remove(drink);
+                }
+
+                return drink;
             }
             catch (Exception ex)
             {
                 logger.LogError($"Failed to delete item: {ex}");
+                throw new Exception("Error deleting data from repository", ex);
             }
         }
 
         public async Task<bool> SaveAllAsync()
         {
-            return await db.SaveChangesAsync() > 0;
+            try
+            {
+                var saved = await db.SaveChangesAsync();
+                return saved > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to save changes to the repository: {ex}");
+                throw new DbUpdateException("Error saving changes to repository.", ex);
+            }
         }
 
         public bool CheckForExisting(string name)
