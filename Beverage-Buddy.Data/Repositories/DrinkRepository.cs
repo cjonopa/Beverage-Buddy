@@ -116,7 +116,8 @@ namespace Beverage_Buddy.Data.Repositories
         {
             try
             {
-                return await db.SaveChangesAsync() > 0;
+                var saved = await db.SaveChangesAsync();
+                return saved > 0;
             }
             catch (Exception ex)
             {

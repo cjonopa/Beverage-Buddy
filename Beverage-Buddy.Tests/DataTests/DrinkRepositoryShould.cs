@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Beverage_Buddy.Data.Models;
 using Beverage_Buddy.Data.Repositories;
@@ -12,8 +11,10 @@ namespace Beverage_Buddy.Tests.DataTests
     {
         private readonly Mock<IRepository<Drink, string>> mockDrinkRepo;
 
-        private ICollection<Drink> drinks;
-        private int expected;
+        private Drink Drink1 { get; set; }
+        private Drink Drink2 { get; set; }
+        private ICollection<Drink> Drinks { get; set; }
+        private int ExpectedCount { get; set; }
 
         public DrinkRepositoryShould()
         {
@@ -23,13 +24,13 @@ namespace Beverage_Buddy.Tests.DataTests
 
         private void SetupDrinkList()
         {
-            drinks = new List<Drink>
-            {
-                new Drink {Id = "1", DrinkName = "Drink 1"},
-                new Drink {Id = "2", DrinkName = "Drink 2"}
-            };
+            Drink1 = new Drink {Id = "1", DrinkName = "Drink 1"};
+            Drink2 = new Drink {Id = "2", DrinkName = "Drink 2"};
 
-            expected = 2;
+            Drinks = new List<Drink>
+            { Drink1, Drink2 };
+
+            ExpectedCount = Drinks.Count;
         }
 
         [Fact]
@@ -37,7 +38,7 @@ namespace Beverage_Buddy.Tests.DataTests
         {
             //-- Arrange
             mockDrinkRepo.Setup(mdr => mdr.GetAllAsync())
-                .Returns(Task.FromResult(drinks));
+                .Returns(Task.FromResult(Drinks));
             var repo = mockDrinkRepo.Object;
 
             //-- Act
@@ -45,72 +46,72 @@ namespace Beverage_Buddy.Tests.DataTests
 
             //-- Assert
             Assert.IsAssignableFrom<ICollection<Drink>>(result);
-            Assert.Equal(expected, result.Count);
+            Assert.Equal(ExpectedCount, result.Count);
         }
 
         [Fact]
         public async void Add_A_Drink()
         {
             //-- Arrange
-            mockDrinkRepo.Setup(mdr => mdr.GetAllAsync())
-                .Returns(Task.FromResult(drinks));
-            var drink = new Drink { Id = "3", DrinkName = "Drink 3" };
+            var drink3 = new Drink { Id = "3", DrinkName = "Drink 3" };
+            mockDrinkRepo.Setup(mdr => mdr.Add(drink3))
+                .Returns(drink3);
+            mockDrinkRepo.Setup(mdr => mdr.SaveAllAsync())
+                .Returns(Task.FromResult(true));
+
             var repo = mockDrinkRepo.Object;
 
             //-- Act
-            var result = await repo.GetAllAsync();
-            result.Add(drink);
+            var returned =repo.Add(drink3);
+            var success = await repo.SaveAllAsync();
 
             //-- Assert
-            Assert.IsAssignableFrom<ICollection<Drink>>(result);
-            Assert.Equal(expected + 1, result.Count);
+            Assert.True(success);
+            Assert.IsType<Drink>(returned);
+            Assert.Equal(drink3, returned);
         }
 
         [Fact]
-        public async void Add_Complex_Drink()
+        public async void Delete_A_Drink()
         {
             //-- Arrange
-            mockDrinkRepo.Setup(mdr => mdr.GetAllAsync())
-                .Returns(Task.FromResult(drinks));
-            List<DrinkIngredient> ingredients = new List<DrinkIngredient>();
-            DrinkIngredient ingredient1 = new DrinkIngredient();
-            DrinkIngredient ingredient2 = new DrinkIngredient();
+            mockDrinkRepo.Setup(mdr => mdr.Delete(Drink1.Id))
+                .Returns(Drink1);
+            mockDrinkRepo.Setup(mdr => mdr.SaveAllAsync())
+                .Returns(Task.FromResult(true));
 
-            ingredients.Add(ingredient1);
-            ingredients.Add(ingredient2);
-
-            var drink = new Drink { Id = "3", DrinkName = "Drink 3", Alcoholic = true, Category = "Odd Drink", DrinkIngredients = ingredients };
             var repo = mockDrinkRepo.Object;
 
             //-- Act
-            var result = await repo.GetAllAsync();
-            result.Add(drink);
+            var returned = repo.Delete(Drink1.Id);
+            var success = await repo.SaveAllAsync();
 
             //-- Assert
-            Assert.IsAssignableFrom<ICollection<Drink>>(result);
-            Assert.Equal(expected + 1, result.Count);
+            Assert.True(success);
+            Assert.IsType<Drink>(returned);
+            Assert.Equal(Drink1, returned);
         }
 
         [Fact]
-        public async void Add_Multiple_Drinks()
+        public async void Update_A_Drink()
         {
             //-- Arrange
-            mockDrinkRepo.Setup(mdr => mdr.GetAllAsync())
-                .Returns(Task.FromResult(drinks));
-            var drink1 = new Drink { Id = "3", DrinkName = "Drink 3" };
-            var drink2 = new Drink { Id = "4", DrinkName = "Drink 4" };
+            mockDrinkRepo.Setup(mdr => mdr.Update(Drink1))
+                .Returns(Drink1);
+            mockDrinkRepo.Setup(mdr => mdr.SaveAllAsync())
+                .Returns(Task.FromResult(true));
+
             var repo = mockDrinkRepo.Object;
 
             //-- Act
-            var result = await repo.GetAllAsync();
-            result.Add(drink1);
-            result.Add(drink2);
-
+            Drink1.Instructions = "Drink Instructions 1";
+            var returned = repo.Update(Drink1);
+            var success = await repo.SaveAllAsync();
 
             //-- Assert
-            Assert.IsAssignableFrom<ICollection<Drink>>(result);
-            Assert.Equal(expected + 2, result.Count);
+            Assert.True(success);
+            Assert.IsType<Drink>(returned);
+            Assert.Equal(Drink1, returned);
         }
-       
     }
 }
