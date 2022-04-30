@@ -14,7 +14,7 @@ namespace Beverage_Buddy.Tests.DataTests
         private Drink Drink1 { get; set; }
         private Drink Drink2 { get; set; }
         private ICollection<Drink> Drinks { get; set; }
-        private int ExpectedCount { get; set; }
+        private int Expected { get; set; }
 
         public DrinkRepositoryShould()
         {
@@ -30,7 +30,7 @@ namespace Beverage_Buddy.Tests.DataTests
             Drinks = new List<Drink>
             { Drink1, Drink2 };
 
-            ExpectedCount = Drinks.Count;
+            Expected = Drinks.Count;
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace Beverage_Buddy.Tests.DataTests
 
             //-- Assert
             Assert.IsAssignableFrom<ICollection<Drink>>(result);
-            Assert.Equal(ExpectedCount, result.Count);
+            Assert.Equal(Expected, result.Count);
         }
 
         [Fact]
