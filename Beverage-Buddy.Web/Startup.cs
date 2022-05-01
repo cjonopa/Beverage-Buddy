@@ -54,6 +54,9 @@ namespace Beverage_Buddy.Web
             services.AddScoped<IRepository<Recipe, int>, RecipeRepository>();
             services.AddScoped<IRepository<Drink, string>, DrinkRepository>();
 
+            services.AddHttpContextAccessor();
+            services.AddSession();
+
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
             
@@ -74,6 +77,7 @@ namespace Beverage_Buddy.Web
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseSession();
 
             app.UseAuthentication();
             app.UseAuthorization();

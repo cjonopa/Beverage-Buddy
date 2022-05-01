@@ -1,4 +1,4 @@
-﻿@model Recipe
+﻿@model Beverage_Buddy.Data.Models.Recipe
 
 @{
     ViewData["Title"] = "Create";
@@ -23,9 +23,19 @@
                 </label>
             </div>
             <div class="form-group">
+                <label asp-for="Instructions" class="control-label"></label>
+                <input asp-for="Instructions" class="form-control" />
+                <span asp-validation-for="Instructions" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="DrinkType" class="control-label"></label>
                 <select asp-for="DrinkType" class="form-control"></select>
                 <span asp-validation-for="DrinkType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RecipeThumb" class="control-label"></label>
+                <input asp-for="RecipeThumb" class="form-control" />
+                <span asp-validation-for="RecipeThumb" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
