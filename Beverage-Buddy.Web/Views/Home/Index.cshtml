@@ -1,7 +1,29 @@
-﻿@{
-    ViewBag.Title = "Home Page";
-}
-
-<div class="jumbotron">
-    <h1>Beverage Buddy</h1>
-</div>
+﻿<body>
+    <div class="container col-xxl-12 px-4 py-5 hero">
+        <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+            <div class="col-10 col-sm-8 col-lg-6">
+                <img src="https://cdn.pixabay.com/photo/2019/07/12/11/26/cups-4332637_960_720.png" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+            </div>
+            <div class="col-lg-6">
+                <h1 class="display-5 fw-bold lh-1 mb-3">Welcome Beverage Buddy!</h1>
+                <p class="lead">
+                    Your source to signup, discover, and share new beverage experiences with family and friends!
+                    Browse over 1500 beverage recipes! You can find an old favorite, or search by ingredient to try something
+                    completely new!
+                </p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                    @if (User?.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <a class="btn btn-primary btn-lg px-4 me-md-2" asp-controller="Recipe" asp-action="Index">Favorite Recipes</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-primary btn-lg px-4 me-md-2" asp-controller="Account" asp-action="Login">Login</a>
+                    }
+                    <a class="btn btn-outline-secondary btn-lg px-4" asp-controller="Search" asp-action="Index">Browse Recipes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/docs/5.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
