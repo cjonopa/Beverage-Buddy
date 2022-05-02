@@ -10,6 +10,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Beverage_Buddy.Data.Controllers
 {
+    [Produces("application/json")]
+    [Route("api/[Controller]")]
+    [ApiController]
     public class IngredientsController : ControllerBase
     {
         private readonly IRepository<Ingredient, int> repository;
