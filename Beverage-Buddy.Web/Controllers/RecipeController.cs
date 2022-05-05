@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -45,8 +46,9 @@ namespace Beverage_Buddy.Web.Controllers
                 model.Recipes = model.Recipes.Where(s => s.Name.ToLower().Contains(searchName.ToLower())).ToList();
             }
 
-            var pageResults = 20;
-            var pageCount = Math.Ceiling(model.Recipes.Count() / (double)pageResults);
+            const int pageResults = 20;
+            var count = model.Recipes.Count;
+            var pageCount = Math.Ceiling(count / (double)pageResults);
 
             model.Recipes = model.Recipes
                 .Skip((page - 1) * pageResults)
@@ -85,21 +87,41 @@ namespace Beverage_Buddy.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var model = new RecipeCreateViewModel();
+
+            var ingredient = new Ingredient();
+            model.Ingredients.Add(ingredient);
+
+
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Recipe recipe)
+        public ActionResult Create(RecipeCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
-                return RedirectToAction("Details", new { id = recipe.Id });
+                return RedirectToAction("Details", new { id = model.Recipe });
             }
 
             return View();
+        }
+
+        public IActionResult AddIngredient()
+        {
+            return PartialView("_AddIngredient", new Ingredient());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public RedirectToActionResult RemoveIngredient(Recipe recipe, Ingredient ingredient)
+        {
+            
+
+            return RedirectToAction("Create");
         }
 
         [HttpGet]

@@ -1,53 +1,61 @@
-﻿@model Beverage_Buddy.Data.Models.Recipe
+﻿@model RecipeCreateViewModel
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+@section scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
 
-<h4>Recipe</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+        <form id="newRecipe" asp-action="Create">
+            <div>
+                <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Alcoholic" /> @Html.DisplayNameFor(model => model.Alcoholic)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="Instructions" class="control-label"></label>
-                <input asp-for="Instructions" class="form-control" />
-                <span asp-validation-for="Instructions" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DrinkType" class="control-label"></label>
-                <select asp-for="DrinkType" class="form-control"></select>
-                <span asp-validation-for="DrinkType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RecipeThumb" class="control-label"></label>
-                <input asp-for="RecipeThumb" class="form-control" />
-                <span asp-validation-for="RecipeThumb" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="card mx-auto">
+                <div asp-validation-summary="ModelOnly" class="card-body text-danger"></div>
+                <div class="card-body">
+                    <div class="form-floating mb-0">
+                        <img src="@Model.Recipe.RecipeThumb" class="card-img-top" alt="@Model.Recipe.Name" />
+                        <input type="file" asp-for="Recipe.RecipeThumb" class="form-control" placeholder="@Model.Recipe.RecipeThumb" />
+                        <label asp-for="Recipe.RecipeThumb" class="form-label"></label>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">New Recipe</h5>
+                    <div class="form-floating mb-0">
+                        <input type="text" asp-for="Recipe.Name" class="form-control" placeholder="@Model.Recipe.Name" />
+                        <label asp-for="Recipe.Name" class="form-label"></label>
+                        <span asp-validation-for="Recipe.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-check form-switch m-3">
+                        <input class="form-check-input" type="checkbox" asp-for="Recipe.Alcoholic" />
+                        <label class="form-check-label" asp-for="Recipe.Alcoholic"></label>
+                        <span asp-validation-for="Recipe.Alcoholic" class="text-danger"></span>
+                    </div>
+                    <div class="mb-1">
+                        <label asp-for="Recipe.DrinkType" class="form-label"></label>
+                        <select id="drinkType" name="drinkType" asp-for="Recipe.DrinkType"
+                                asp-items="@Html.GetEnumSelectList(typeof(DrinkType))"
+                                class="form-control"></select>
+                        <span asp-validation-for="Recipe.DrinkType" class="text-danger"></span>
+                    </div>
+                    <div class="mb-1">
+                        <label asp-for="Recipe.Instructions" class="form-label"></label>
+                        <textarea asp-for="Recipe.Instructions" class="form-control" rows="5" placeholder="@Model.Recipe.Instructions">
+                        </textarea>
+                        <span asp-validation-for="Recipe.Instructions" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="mb-1">
+                        <input type="submit" id="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </div>
             </div>
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 namespace Beverage_Buddy.Data.Models
 {
@@ -13,6 +14,7 @@ namespace Beverage_Buddy.Data.Models
 
         [Required]
         [MaxLength(255)]
+        [Display(Name = "Name", Prompt = "Name")]
         public string Name { get; set; }
 
         public bool Alcoholic { get; set; }
@@ -27,7 +29,9 @@ namespace Beverage_Buddy.Data.Models
         public IEnumerable<Ingredient> Ingredients { get; set; }
 
         public RecipeUser User { get; set; }
+
         [MaxLength(int.MaxValue)]
+        [Display(Name = "Image", Prompt = "Image")]
         public string RecipeThumb { get; set; }
     }
 }

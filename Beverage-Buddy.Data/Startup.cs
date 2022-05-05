@@ -61,6 +61,7 @@ namespace Beverage_Buddy.Data
 
             services.AddScoped<IRepository<Recipe, int>, RecipeRepository>();
             services.AddScoped<IRepository<Drink, string>, DrinkRepository>();
+            services.AddScoped<IRepository<Ingredient, int>, IngredientRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -24,6 +24,7 @@
                         @if (User?.Identity != null && User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item"><a class="nav-link" asp-controller="Recipe" asp-action="Index">Favorite Recipes</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Recipe" asp-action="Create">Add Recipe to Favorites</a></li>
                         }
                         <li class="nav-item"><a class="nav-link" asp-controller="Search" asp-action="Index">All Recipes</a></li>
                         <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="About">About</a></li>
@@ -63,6 +64,6 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-    @RenderSection("scripts", required: false)
+@await RenderSectionAsync("scripts", required: false)
 </body>
 </html>

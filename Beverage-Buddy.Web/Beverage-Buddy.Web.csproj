@@ -24,4 +24,9 @@
     <ProjectReference Include="..\Beverage-Buddy.Data\Beverage-Buddy.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Infrastructure\" />
+    <Folder Include="wwwroot\lib\scripts\" />
+  </ItemGroup>
+
 </Project>

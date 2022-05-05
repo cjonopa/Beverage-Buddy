@@ -10,9 +10,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BC38497C-587C-48C0-A7C4-3F700328BF11}"
 	ProjectSection(SolutionItems) = preProject
 		README - Database Instructions.txt = README - Database Instructions.txt
+		README - Solution Startup.txt = README - Solution Startup.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beverage-Buddy.Tests", "Beverage-Buddy.Tests\Beverage-Buddy.Tests.csproj", "{06BA632B-61AC-4082-9448-88A659D63014}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beverage-Buddy.Tests", "Beverage-Buddy.Tests\Beverage-Buddy.Tests.csproj", "{06BA632B-61AC-4082-9448-88A659D63014}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
