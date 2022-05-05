@@ -24,3 +24,5 @@ how to do that.
 4.	next in the cmd line you will now run - dotnet ef database update
 	a. this will then push your migration to the database and record the entry in the _EFMigrationsHistory 
 	   table in the database.
+5.	After everything is done, from the command line in the Beverage-Buddy.Data folder, you will need to run
+	dotnet run /seed. This will populate the database with our data.
