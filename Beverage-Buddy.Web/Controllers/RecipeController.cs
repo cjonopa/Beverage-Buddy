@@ -98,7 +98,7 @@ namespace Beverage_Buddy.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var model = new RecipeCreateViewModel();
+            var model = new RecipeCreateUpdateModel();
             var user = await userManager.GetUserAsync(User);
             model.Recipe.User = user;
             
@@ -106,21 +106,9 @@ namespace Beverage_Buddy.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(RecipeCreateViewModel model, IFormFile file)
+        public async Task<IActionResult> Create(RecipeCreateUpdateModel model, IFormFile file)
         {
-            if (file != null && file.Length != 0)
-            {
-                var path = AppDomain.CurrentDomain.BaseDirectory;
-                var info = new DirectoryInfo(path);
-                var imageLocation = $"{info.Parent?.Parent?.Parent}\\wwwroot\\lib\\images";
-                var fileName = $"{model.Recipe.Name}{Path.GetExtension(file.FileName)}";
-
-                var savedFileName = Path.Combine(imageLocation, fileName);
-
-                await using var stream = new FileStream(savedFileName, FileMode.Create);
-                await file.CopyToAsync(stream);
-                model.Recipe.RecipeThumb = $"\\lib\\images\\{fileName}";
-            }
+            await LoadFileInformation(model, file);
 
             if (!ModelState.IsValid) return View(model);
             
@@ -145,7 +133,6 @@ namespace Beverage_Buddy.Web.Controllers
             return View(model);
         }
 
-
         public ActionResult IngredientEntryRow()
         {
             return PartialView("_Ingredients");
@@ -154,7 +141,7 @@ namespace Beverage_Buddy.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var model = new RecipeDetailsViewModel()
+            var model = new RecipeCreateUpdateModel
             {
                 IsAuthenticated = User.Identity != null && User.Identity.IsAuthenticated
             };
@@ -179,14 +166,36 @@ namespace Beverage_Buddy.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Recipe recipe)
+        public async Task<ActionResult> Edit(RecipeCreateUpdateModel model, IFormFile file)
         {
+            await LoadFileInformation(model, file);
+
             if (ModelState.IsValid)
             {
-                return RedirectToAction("Details", new { id = recipe.Id });
+                if (!ModelState.IsValid) return View(model);
+
+                using var client = new HttpClient
+                {
+                    BaseAddress = new Uri(BaseUrl)
+                };
+
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var result = await client.PutAsJsonAsync("api/recipes", model.Recipe);
+
+                if (!result.IsSuccessStatusCode)
+                {
+                    ModelState.AddModelError("Recipe", $"{result.StatusCode}");
+                    return View(model);
+                }
+                if (result.Headers.Location != null)
+                    return Redirect(result.Headers.Location.OriginalString);
+
+                return View(model);
             }
 
-            return View();
+            return View(model);
         }
 
         [HttpGet]
@@ -204,5 +213,23 @@ namespace Beverage_Buddy.Web.Controllers
 
             return RedirectToAction("Index");
         }
+
+        private async Task LoadFileInformation(RecipeCreateUpdateModel model, IFormFile file)
+        {
+            if (file != null && file.Length != 0)
+            {
+                var path = AppDomain.CurrentDomain.BaseDirectory;
+                var info = new DirectoryInfo(path);
+                var imageLocation = $"{info.Parent?.Parent?.Parent}\\wwwroot\\lib\\images";
+                var fileName = $"{model.Recipe.Name}{Path.GetExtension(file.FileName)}";
+
+                var savedFileName = Path.Combine(imageLocation, fileName);
+
+                await using var stream = new FileStream(savedFileName, FileMode.Create);
+                await file.CopyToAsync(stream);
+                model.Recipe.RecipeThumb = $"\\lib\\images\\{fileName}";
+            }
+        }
+
     }
 }

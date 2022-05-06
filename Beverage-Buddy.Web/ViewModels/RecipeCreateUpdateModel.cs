@@ -3,21 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using Beverage_Buddy.Data.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 
 namespace Beverage_Buddy.Web.ViewModels
 {
-    public class RecipeCreateViewModel
+    public class RecipeCreateUpdateModel
     {
         public Recipe Recipe { get; set; }
         public IEnumerable<SelectListItem> DrinkTypes { get; set; }
+        public bool IsAuthenticated { get; set; }
 
-        public RecipeCreateViewModel()
+        public RecipeCreateUpdateModel()
         {
             Recipe = new Recipe
             {
                 Ingredients = new List<Ingredient>()
             };
             PopulateDrinkTypes();
+        }
+
+        public void ConvertJsonResponse(string webResponse)
+        {
+            Recipe = JsonConvert.DeserializeObject<Recipe>(webResponse);
         }
 
         private void PopulateDrinkTypes()
