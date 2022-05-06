@@ -62,12 +62,12 @@ namespace Beverage_Buddy.Data.Controllers
         /// <param name="recipeId">The recipe identifier.</param>
         /// <returns></returns>
         [HttpGet("{recipeId}")]
-        public ActionResult<Recipe> Get(int recipeId)
+        public async Task<ActionResult<Recipe>> Get(int recipeId)
         {
             try
             {
                 logger.LogInformation("Recipe : GetAll was called.");
-                var results = recipeRepository.GetAsync(recipeId);
+                var results = await recipeRepository.GetAsync(recipeId);
                 if (results == null) return NotFound($"No recipe with id, {recipeId}, was found.");
 
                 return Ok(results);

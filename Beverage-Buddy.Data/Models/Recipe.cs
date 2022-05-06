@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Beverage_Buddy.Data.Infrastructure;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 namespace Beverage_Buddy.Data.Models
@@ -24,9 +25,12 @@ namespace Beverage_Buddy.Data.Models
 
         [Required]
         [Display(Name="Type of Drink")]
+        [Range(1, 12, ErrorMessage = "Type of Drink cannot be none.")]
         public DrinkType DrinkType { get; set; }
 
-        public IEnumerable<Ingredient> Ingredients { get; set; }
+        [Required]
+        [CollectionNotEmpty]
+        public ICollection<Ingredient> Ingredients { get; set; }
 
         public RecipeUser User { get; set; }
 
