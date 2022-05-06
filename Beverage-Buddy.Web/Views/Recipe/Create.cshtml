@@ -12,18 +12,21 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form id="newRecipe" asp-action="Create">
+        <form id="newRecipe" enctype="multipart/form-data" method="post" asp-action="Create">
             <div>
                 <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
             </div>
             <div class="card mx-auto">
-                <div asp-validation-summary="ModelOnly" class="card-body text-danger"></div>
+                <div class="card-body">
+                    <div asp-validation-summary="ModelOnly" class="card-body text-danger"></div>
+                </div>
                 <div class="card-body">
                     <div class="form-floating mb-0">
                         <img src="@Model.Recipe.RecipeThumb" class="card-img-top" alt="@Model.Recipe.Name"/>
                         
-                        <input type="file" asp-for="Recipe.RecipeThumb" class="form-control" placeholder="@Model.Recipe.RecipeThumb"/>
+                        <input type="file" asp-for="Recipe.RecipeThumb" name="file" class="form-control" placeholder="@Model.Recipe.RecipeThumb"/>
                         <label asp-for="Recipe.RecipeThumb" class="form-label"></label>
+                        <input type="hidden" asp-for="Recipe.RecipeThumb" />
                     </div>
                 </div>
                 <div class="card-body">
@@ -40,7 +43,9 @@
                     </div>
                     <div class="mb-1">
                         <label asp-for="Recipe.DrinkType" class="form-label"></label>
-                        @Html.DropDownListFor(model => Model.Recipe.DrinkType, new SelectList(Model.DrinkTypes, "Value", "Text"), htmlAttributes: new {@class = "form-control", id = "DrinkType"})
+                        @Html.DropDownListFor(model => Model.Recipe.DrinkType, 
+                            new SelectList(Model.DrinkTypes, "Value", "Text"), 
+                            htmlAttributes: new {@class = "form-control", id = "DrinkType"})
                         <span asp-validation-for="Recipe.DrinkType" class="text-danger"></span>
                     </div>
                     <div class="mb-1">

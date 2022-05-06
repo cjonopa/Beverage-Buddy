@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Beverage_Buddy.Data.Models;
 using Beverage_Buddy.Data.Repositories;
@@ -91,7 +89,7 @@ namespace Beverage_Buddy.Data.Controllers
             {
                 var existing = recipeRepository.CheckForExisting(model.Name);
 
-                if (existing) return BadRequest($"The recipe name, {model.Name}, already exists in Favorites.");
+                if (existing) return Conflict($"The recipe name, {model.Name}, already exists in Favorites.");
 
 
                 recipeRepository.Add(model);

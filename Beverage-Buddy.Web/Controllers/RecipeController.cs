@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Beverage_Buddy.Data.Models;
 using Beverage_Buddy.Web.ViewModels;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace Beverage_Buddy.Web.Controllers
 {
@@ -106,10 +106,24 @@ namespace Beverage_Buddy.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(RecipeCreateViewModel model)
+        public async Task<IActionResult> Create(RecipeCreateViewModel model, IFormFile file)
         {
-            if (!ModelState.IsValid) return View(model);
+            if (file != null && file.Length != 0)
+            {
+                var path = AppDomain.CurrentDomain.BaseDirectory;
+                var info = new DirectoryInfo(path);
+                var imageLocation = $"{info.Parent?.Parent?.Parent}\\wwwroot\\lib\\images";
+                var fileName = $"{model.Recipe.Name}{Path.GetExtension(file.FileName)}";
 
+                var savedFileName = Path.Combine(imageLocation, fileName);
+
+                await using var stream = new FileStream(savedFileName, FileMode.Create);
+                await file.CopyToAsync(stream);
+                model.Recipe.RecipeThumb = $"\\lib\\images\\{fileName}";
+            }
+
+            if (!ModelState.IsValid) return View(model);
+            
             using var client = new HttpClient
             {
                 BaseAddress = new Uri(BaseUrl)
@@ -120,7 +134,11 @@ namespace Beverage_Buddy.Web.Controllers
 
             var result = await client.PostAsJsonAsync("api/recipes", model.Recipe);
 
-            if (!result.IsSuccessStatusCode) return View(model);
+            if (!result.IsSuccessStatusCode)
+            {
+                ModelState.AddModelError("Recipe", $"{result.StatusCode}");
+                return View(model);
+            }
             if (result.Headers.Location != null)
                 return Redirect(result.Headers.Location.OriginalString);
 
