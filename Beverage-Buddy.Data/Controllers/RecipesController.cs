@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Beverage_Buddy.Data.Models;
 using Beverage_Buddy.Data.Repositories;
@@ -62,12 +60,12 @@ namespace Beverage_Buddy.Data.Controllers
         /// <param name="recipeId">The recipe identifier.</param>
         /// <returns></returns>
         [HttpGet("{recipeId}")]
-        public ActionResult<Recipe> Get(int recipeId)
+        public async Task<ActionResult<Recipe>> Get(int recipeId)
         {
             try
             {
                 logger.LogInformation("Recipe : GetAll was called.");
-                var results = recipeRepository.GetAsync(recipeId);
+                var results = await recipeRepository.GetAsync(recipeId);
                 if (results == null) return NotFound($"No recipe with id, {recipeId}, was found.");
 
                 return Ok(results);
@@ -91,7 +89,7 @@ namespace Beverage_Buddy.Data.Controllers
             {
                 var existing = recipeRepository.CheckForExisting(model.Name);
 
-                if (existing) return BadRequest($"The recipe name, {model.Name}, already exists in Favorites.");
+                if (existing) return Conflict($"The recipe name, {model.Name}, already exists in Favorites.");
 
 
                 recipeRepository.Add(model);

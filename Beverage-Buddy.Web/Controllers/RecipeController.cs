@@ -1,20 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Beverage_Buddy.Data.Models;
 using Beverage_Buddy.Web.ViewModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 
 namespace Beverage_Buddy.Web.Controllers
 {
     [Authorize]
     public class RecipeController : Controller
     {
+        private readonly UserManager<RecipeUser> userManager;
         public static string BaseUrl { get; } = "http://localhost:5000/";
+
+        public RecipeController(UserManager<RecipeUser> userManager)
+        {
+            this.userManager = userManager;
+        }
 
         [HttpGet]
         public async Task<IActionResult> Index(string searchName, int page)
@@ -90,38 +99,56 @@ namespace Beverage_Buddy.Web.Controllers
         public async Task<IActionResult> Create()
         {
             var model = new RecipeCreateViewModel();
-
-            var ingredient = new Ingredient();
-            model.Ingredients.Add(ingredient);
-
-
+            var user = await userManager.GetUserAsync(User);
+            model.Recipe.User = user;
+            
             return View(model);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(RecipeCreateViewModel model)
+        public async Task<IActionResult> Create(RecipeCreateViewModel model, IFormFile file)
         {
-            if (ModelState.IsValid)
+            if (file != null && file.Length != 0)
             {
-                return RedirectToAction("Details", new { id = model.Recipe });
+                var path = AppDomain.CurrentDomain.BaseDirectory;
+                var info = new DirectoryInfo(path);
+                var imageLocation = $"{info.Parent?.Parent?.Parent}\\wwwroot\\lib\\images";
+                var fileName = $"{model.Recipe.Name}{Path.GetExtension(file.FileName)}";
+
+                var savedFileName = Path.Combine(imageLocation, fileName);
+
+                await using var stream = new FileStream(savedFileName, FileMode.Create);
+                await file.CopyToAsync(stream);
+                model.Recipe.RecipeThumb = $"\\lib\\images\\{fileName}";
             }
 
-            return View();
-        }
-
-        public IActionResult AddIngredient()
-        {
-            return PartialView("_AddIngredient", new Ingredient());
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public RedirectToActionResult RemoveIngredient(Recipe recipe, Ingredient ingredient)
-        {
+            if (!ModelState.IsValid) return View(model);
             
+            using var client = new HttpClient
+            {
+                BaseAddress = new Uri(BaseUrl)
+            };
 
-            return RedirectToAction("Create");
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var result = await client.PostAsJsonAsync("api/recipes", model.Recipe);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                ModelState.AddModelError("Recipe", $"{result.StatusCode}");
+                return View(model);
+            }
+            if (result.Headers.Location != null)
+                return Redirect(result.Headers.Location.OriginalString);
+
+            return View(model);
+        }
+
+
+        public ActionResult IngredientEntryRow()
+        {
+            return PartialView("_Ingredients");
         }
 
         [HttpGet]

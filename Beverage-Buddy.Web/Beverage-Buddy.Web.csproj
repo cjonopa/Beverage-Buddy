@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BeginCollectionItemCore" Version="1.1.0" />
     <PackageReference Include="MailKit" Version="3.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.15" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="5.0.15" />
@@ -22,11 +23,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Beverage-Buddy.Data\Beverage-Buddy.Data.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Infrastructure\" />
-    <Folder Include="wwwroot\lib\scripts\" />
   </ItemGroup>
 
 </Project>
