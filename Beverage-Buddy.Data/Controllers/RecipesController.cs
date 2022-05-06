@@ -107,5 +107,26 @@ namespace Beverage_Buddy.Data.Controllers
 
             return BadRequest("Failed to save the favorite recipe.");
         }
+
+        [HttpPut]
+        public async Task<ActionResult<Recipe>> Put([FromBody] Recipe model)
+        {
+            try
+            {
+                recipeRepository.Update(model);
+                if (await recipeRepository.SaveAllAsync())
+                {
+                    var location = linkGenerator.GetPathByAction("Details", "Recipe", new { id = model.Id });
+                    return Created(location, model);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to save Favorite recipe: {ex}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+
+            return BadRequest("Failed to save the favorite recipe.");
+        }
     }
 }
